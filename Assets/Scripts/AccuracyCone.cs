@@ -1,13 +1,17 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Throw : MonoBehaviour
+public class AccuracyCone : MonoBehaviour
 {
     
     LineRenderer lineRenderer;
     bool mouseHold = false;
     readonly float defaultAngle = 45;
     float currentAngle = 0;
+    float baseAngle = 0;
+
+    public float CurrentAngle => currentAngle;
+    public float BaseAngle => baseAngle;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -18,6 +22,7 @@ public class Throw : MonoBehaviour
         lineRenderer.endWidth = 0.1f;
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
         lineRenderer.sortingLayerID = SortingLayer.NameToID("Player");
+        lineRenderer.sortingOrder = 10;
 
         currentAngle = defaultAngle;
     }
@@ -47,9 +52,7 @@ public class Throw : MonoBehaviour
             var mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
             Vector3 apex = transform.position;
 
-            float baseAngle = Mathf.Atan2(mousePos.y - apex.y, mousePos.x - apex.x);
-            //apex.y += 1;
-            //apex.x += 0.5f;
+            baseAngle = Mathf.Atan2(mousePos.y - apex.y, mousePos.x - apex.x);
 
             Vector3 upperDir = new(
                 Mathf.Cos(baseAngle + radians),

@@ -38,6 +38,26 @@ public class PlayerController : MonoBehaviour
         originalOffset = capsuleCollider.offset.y;
     }
 
+    private void Update()
+    {
+        // Flip the player to face the mouse cursor direction
+        if (Camera.main != null)
+        {
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+            
+            if (mousePos.x > transform.position.x)
+            {
+                // Face right
+                transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            }
+            else if (mousePos.x < transform.position.x)
+            {
+                // Face left
+                transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            }
+        }
+    }
+
     private void FixedUpdate()
     {
         // Calculate target speed (cannot run while crouching)
