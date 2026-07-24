@@ -22,9 +22,9 @@ public class AccuracyCone : MonoBehaviour
         lineRenderer.positionCount = 0;
         lineRenderer.startWidth = 0.1f;
         lineRenderer.endWidth = 0.1f;
-        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-        lineRenderer.sortingLayerID = SortingLayer.NameToID("Player");
-        lineRenderer.sortingOrder = 10;
+        lineRenderer.material = new Material(Shader.Find("Custom/InvertUnlit"));
+        lineRenderer.sortingLayerID = SortingLayer.NameToID("VFX");
+        lineRenderer.sortingOrder = short.MaxValue;
 
         currentAngle = defaultAngle;
     }
