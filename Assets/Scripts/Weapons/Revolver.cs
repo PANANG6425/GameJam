@@ -12,6 +12,15 @@ public class Revolver : MonoBehaviour
     [SerializeField]
     int damage = 1;
 
+    [SerializeField]
+    float BaseAimAngle = 45;
+
+    [SerializeField]
+    float MinAimAngle = 10f;
+
+    [SerializeField]
+    float AimSpeed = 0.1f;
+
     private AccuracyCone accuracyCone;
 
     private void Awake()
@@ -22,6 +31,18 @@ public class Revolver : MonoBehaviour
         {
             accuracyCone = GetComponent<AccuracyCone>();
         }
+    }
+
+    void Start()
+    {
+        if (accuracyCone == null)
+        {
+            Debug.LogError("There is no AccuracyCone Componenet");
+            return;
+        }
+        accuracyCone.SetBaseAngle(BaseAimAngle);
+        accuracyCone.SetAimSpeed(AimSpeed);
+        accuracyCone.SetMinAimAngle(MinAimAngle);
     }
 
     public void OnFire(InputAction.CallbackContext context)

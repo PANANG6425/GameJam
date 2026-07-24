@@ -5,19 +5,39 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
-    [SerializeField] private float walkSpeed = 5f;
-    [SerializeField] private float runSpeed = 10f;
-    [SerializeField] private float acceleration = 30f;
-    [SerializeField] private float deceleration = 40f;
-    [SerializeField] private float jumpForce = 12f;
-    [SerializeField] private float jumpCutMultiplier = 0.5f;
-    [SerializeField] private float coyoteTime = 0.2f;
-    [SerializeField] private float jumpBufferTime = 0.2f;
-    
+    [SerializeField]
+    private float walkSpeed = 5f;
+
+    [SerializeField]
+    private float runSpeed = 10f;
+
+    [SerializeField]
+    private float acceleration = 30f;
+
+    [SerializeField]
+    private float deceleration = 40f;
+
+    [SerializeField]
+    private float jumpForce = 12f;
+
+    [SerializeField]
+    private float jumpCutMultiplier = 0.5f;
+
+    [SerializeField]
+    private float coyoteTime = 0.2f;
+
+    [SerializeField]
+    private float jumpBufferTime = 0.2f;
+
     [Header("Ground Check")]
-    [SerializeField] private Transform groundCheck;
-    [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private Vector2 groundCheckSize = new Vector2(0.5f, 0.1f);
+    [SerializeField]
+    private Transform groundCheck;
+
+    [SerializeField]
+    private LayerMask groundLayer;
+
+    [SerializeField]
+    private Vector2 groundCheckSize = new Vector2(0.5f, 0.1f);
 
     private Rigidbody2D rb;
     private float horizontalInput;
@@ -44,16 +64,22 @@ public class PlayerController : MonoBehaviour
         if (Camera.main != null)
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-            
+
             if (mousePos.x > transform.position.x)
             {
-                // Face right
-                transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+                transform.localScale = new Vector3(
+                    Mathf.Abs(transform.localScale.x),
+                    transform.localScale.y,
+                    transform.localScale.z
+                );
             }
             else if (mousePos.x < transform.position.x)
             {
-                // Face left
-                transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+                transform.localScale = new Vector3(
+                    -Mathf.Abs(transform.localScale.x),
+                    transform.localScale.y,
+                    transform.localScale.z
+                );
             }
         }
     }
@@ -67,11 +93,15 @@ public class PlayerController : MonoBehaviour
         float accelRate = (Mathf.Abs(horizontalInput) > 0.01f) ? acceleration : deceleration;
 
         // Move the current velocity towards the target speed
-        float newVelocityX = Mathf.MoveTowards(rb.linearVelocity.x, targetSpeed, accelRate * Time.fixedDeltaTime);
-        
+        float newVelocityX = Mathf.MoveTowards(
+            rb.linearVelocity.x,
+            targetSpeed,
+            accelRate * Time.fixedDeltaTime
+        );
+
         // Apply the new velocity
         rb.linearVelocity = new Vector2(newVelocityX, rb.linearVelocity.y);
-        
+
         // Check if the player is touching the ground
         isGrounded = Physics2D.OverlapBox(groundCheck.position, groundCheckSize, 0f, groundLayer);
 
@@ -90,7 +120,7 @@ public class PlayerController : MonoBehaviour
         if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-            
+
             // Reset counters to prevent double jumps
             jumpBufferCounter = 0f;
             coyoteTimeCounter = 0f;
@@ -107,8 +137,10 @@ public class PlayerController : MonoBehaviour
     // Hooked to "Run" action via Player Input Component
     public void OnRun(InputAction.CallbackContext context)
     {
-        if (context.performed) isRunning = true;
-        else if (context.canceled) isRunning = false;
+        if (context.performed)
+            isRunning = true;
+        else if (context.canceled)
+            isRunning = false;
     }
 
     // Hooked to "Jump" action via Player Input Component
@@ -124,9 +156,12 @@ public class PlayerController : MonoBehaviour
         {
             if (rb.linearVelocity.y > 0f)
             {
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * jumpCutMultiplier);
+                rb.linearVelocity = new Vector2(
+                    rb.linearVelocity.x,
+                    rb.linearVelocity.y * jumpCutMultiplier
+                );
             }
-            
+
             jumpBufferCounter = 0f;
         }
     }
@@ -147,7 +182,10 @@ public class PlayerController : MonoBehaviour
         {
             isCrouching = true;
             capsuleCollider.size = new Vector2(capsuleCollider.size.x, originalHeight / 2f);
-            capsuleCollider.offset = new Vector2(capsuleCollider.offset.x, originalOffset - (originalHeight / 4f));
+            capsuleCollider.offset = new Vector2(
+                capsuleCollider.offset.x,
+                originalOffset - (originalHeight / 4f)
+            );
         }
         else if (context.canceled)
         {
