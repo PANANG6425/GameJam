@@ -4,10 +4,10 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     [SerializeField]
-    readonly GameObject enemyPrefab;
+    GameObject enemyPrefab;
 
     [SerializeField]
-    readonly float SpawnFreq = 1;
+    float SpawnFreq = 1f;
 
     float curTime = 0;
 
@@ -29,6 +29,7 @@ public class EnemySpawner : MonoBehaviour
             curTime = 0;
             var enemy = Instantiate(enemyPrefab);
             enemy.transform.parent = transform;
+            enemy.transform.position = transform.position;
         }
     }
 }
