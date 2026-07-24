@@ -23,8 +23,8 @@ MonoBehaviour:
   m_OverrideGlobalSceneList: 1
   m_Scenes:
   - m_enabled: 1
-    m_path: Assets/Scenes/PlayerTest.unity
-    m_guid: 18a7526459fc74d46a89bfb5c82b175f
+    m_path: Assets/Scenes/TileMapTest.unity
+    m_guid: d25324cabc63c0d4791fd4012c99cc8d
   m_HasScriptingDefines: 0
   m_ScriptingDefines: []
   m_PlayerSettingsYaml:

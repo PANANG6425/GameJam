@@ -144,6 +144,11 @@ public class PlayerController : MonoBehaviour
             isRunning = true;
         else if (context.canceled)
             isRunning = false;
+
+        if (animator != null)
+        {
+            animator.SetBool("IsSprinting", isRunning);
+        }
     }
 
     // Hooked to "Jump" action via Player Input Component

@@ -22,6 +22,7 @@ public class Revolver : MonoBehaviour
     float AimSpeed = 0.1f;
 
     private AccuracyCone accuracyCone;
+    private Animator animator;
 
     private void Awake()
     {
@@ -31,6 +32,11 @@ public class Revolver : MonoBehaviour
         {
             accuracyCone = GetComponent<AccuracyCone>();
         }
+
+        // Try to find the Animator
+        animator = GetComponent<Animator>();
+        if (animator == null) animator = GetComponentInChildren<Animator>();
+        if (animator == null) animator = GetComponentInParent<Animator>();
     }
 
     void Start()
@@ -50,8 +56,19 @@ public class Revolver : MonoBehaviour
         // Forward the input to the AccuracyCone script so it can draw the accuracy cone
         accuracyCone?.OnLeftClick(context);
 
-        if (context.canceled)
+        if (context.started)
         {
+            if (animator != null)
+            {
+                animator.Play("Anim_Revolver");
+            }
+        }
+        else if (context.canceled)
+        {
+            if (animator != null)
+            {
+                animator.Play("Anim_Fired");
+            }
             Shoot();
         }
     }
