@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 629431109235486792}
   - component: {fileID: 3689197108231109707}
   - component: {fileID: 8316607478068181675}
+  - component: {fileID: 1590990285765219209}
   m_Layer: 8
   m_Name: Enemy
   m_TagString: Enemy
@@ -184,6 +185,20 @@ MonoBehaviour:
   speed: 5
   stopDistance: 1.25
   areaDetection: {fileID: 6136571083762738925}
+  hp: {fileID: 0}
+--- !u!114 &1590990285765219209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4574165161649697101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7bc2f91301754b4e9d48e663aba879f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitPoint
+  max_hp: 2
 --- !u!1 &7830385183244459593
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,6 +9,9 @@ public class Revolver : MonoBehaviour
     [SerializeField]
     private Transform firePoint;
 
+    [SerializeField]
+    int damage = 1;
+
     private AccuracyCone accuracyCone;
 
     private void Awake()
@@ -46,7 +49,9 @@ public class Revolver : MonoBehaviour
             Quaternion rotation = Quaternion.Euler(0, 0, finalAngle * Mathf.Rad2Deg);
 
             Vector3 spawnPos = firePoint != null ? firePoint.position : transform.position;
-            Instantiate(projectilePrefab, spawnPos, rotation);
+            var bullet = Instantiate(projectilePrefab, spawnPos, rotation)
+                .GetComponent<Projectile>();
+            bullet.damage = damage;
         }
         else
         {

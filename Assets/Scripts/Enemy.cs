@@ -10,6 +10,9 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     Area2D areaDetection;
 
+    [SerializeField]
+    HitPoint hp;
+
     Vector3 playerPos = new();
     bool detectedPlayer = false;
     bool nearPlayer = false;
@@ -22,6 +25,7 @@ public class Enemy : MonoBehaviour
             return;
         }
         rb = GetComponent<Rigidbody2D>();
+        hp = GetComponent<HitPoint>();
         areaDetection.onEnter.AddListener(OnPlayerEnter);
         areaDetection.onStay.AddListener(OnPlayerStay);
         areaDetection.onExit.AddListener(OnPlayerExit);
@@ -90,8 +94,13 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void Hit()
+    public void Hit(int damage)
     {
-        Destroy(gameObject);
+        hp?.DecreaseHP(damage);
+        if (hp?.GetCurrentHP() <= 0)
+        {
+            Debug.Log("Destroy");
+            Destroy(gameObject);
+        }
     }
 }

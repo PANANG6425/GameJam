@@ -5,6 +5,7 @@ public class Projectile : MonoBehaviour
     public float speed = 15f;
     public float lifeTime = 5f;
     bool markDestroy = false;
+    public int damage { get; set; } = 0;
 
     void Start()
     {
@@ -26,10 +27,10 @@ public class Projectile : MonoBehaviour
         {
             if (hitInfo.CompareTag("Enemy") && !markDestroy)
             {
-                markDestroy = true;
                 var enemy = hitInfo.gameObject.GetComponent<Enemy>();
-                enemy.Hit();
+                enemy.Hit(damage);
             }
+            markDestroy = true;
             Destroy(gameObject);
         }
     }
