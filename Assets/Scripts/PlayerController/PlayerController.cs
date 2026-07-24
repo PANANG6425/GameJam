@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
     private float horizontalInput;
     private bool isGrounded;
     private bool isRunning;
+    private bool isCrouching;
     private float coyoteTimeCounter;
     private float jumpBufferCounter;
     private CapsuleCollider2D capsuleCollider;
@@ -39,8 +40,8 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Calculate target speed
-        float targetSpeed = horizontalInput * (isRunning ? runSpeed : walkSpeed);
+        // Calculate target speed (cannot run while crouching)
+        float targetSpeed = horizontalInput * ((isRunning && !isCrouching) ? runSpeed : walkSpeed);
 
         // Choose acceleration or deceleration based on whether we are providing input
         float accelRate = (Mathf.Abs(horizontalInput) > 0.01f) ? acceleration : deceleration;
@@ -124,11 +125,13 @@ public class PlayerController : MonoBehaviour
     {
         if (context.performed)
         {
+            isCrouching = true;
             capsuleCollider.size = new Vector2(capsuleCollider.size.x, originalHeight / 2f);
             capsuleCollider.offset = new Vector2(capsuleCollider.offset.x, originalOffset - (originalHeight / 4f));
         }
         else if (context.canceled)
         {
+            isCrouching = false;
             capsuleCollider.size = new Vector2(capsuleCollider.size.x, originalHeight);
             capsuleCollider.offset = new Vector2(capsuleCollider.offset.x, originalOffset);
         }
