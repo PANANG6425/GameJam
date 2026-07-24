@@ -5,9 +5,14 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
-    [SerializeField] private float moveSpeed = 8f;
+    [SerializeField] private float walkSpeed = 5f;
+    [SerializeField] private float runSpeed = 10f;
+    [SerializeField] private float acceleration = 30f;
+    [SerializeField] private float deceleration = 40f;
     [SerializeField] private float jumpForce = 12f;
     [SerializeField] private float jumpCutMultiplier = 0.5f;
+    [SerializeField] private float coyoteTime = 0.2f;
+    [SerializeField] private float jumpBufferTime = 0.2f;
     
     [Header("Ground Check")]
     [SerializeField] private Transform groundCheck;
@@ -17,6 +22,9 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private float horizontalInput;
     private bool isGrounded;
+    private bool isRunning;
+    private float coyoteTimeCounter;
+    private float jumpBufferCounter;
     private CapsuleCollider2D capsuleCollider;
     private float originalHeight;
     private float originalOffset;
@@ -31,11 +39,41 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Apply horizontal movement
-        rb.linearVelocity = new Vector2(horizontalInput * moveSpeed, rb.linearVelocity.y);
+        // Calculate target speed
+        float targetSpeed = horizontalInput * (isRunning ? runSpeed : walkSpeed);
+
+        // Choose acceleration or deceleration based on whether we are providing input
+        float accelRate = (Mathf.Abs(horizontalInput) > 0.01f) ? acceleration : deceleration;
+
+        // Move the current velocity towards the target speed
+        float newVelocityX = Mathf.MoveTowards(rb.linearVelocity.x, targetSpeed, accelRate * Time.fixedDeltaTime);
+        
+        // Apply the new velocity
+        rb.linearVelocity = new Vector2(newVelocityX, rb.linearVelocity.y);
         
         // Check if the player is touching the ground
         isGrounded = Physics2D.OverlapBox(groundCheck.position, groundCheckSize, 0f, groundLayer);
+
+        if (isGrounded)
+        {
+            coyoteTimeCounter = coyoteTime;
+        }
+        else
+        {
+            coyoteTimeCounter -= Time.fixedDeltaTime;
+        }
+
+        jumpBufferCounter -= Time.fixedDeltaTime;
+
+        // Perform jump if both jump buffer and coyote time are valid
+        if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            
+            // Reset counters to prevent double jumps
+            jumpBufferCounter = 0f;
+            coyoteTimeCounter = 0f;
+        }
     }
 
     // Hooked to "Move" action via Player Input Component
@@ -45,19 +83,30 @@ public class PlayerController : MonoBehaviour
         horizontalInput = context.ReadValue<Vector2>().x;
     }
 
+    // Hooked to "Run" action via Player Input Component
+    public void OnRun(InputAction.CallbackContext context)
+    {
+        if (context.performed) isRunning = true;
+        else if (context.canceled) isRunning = false;
+    }
+
     // Hooked to "Jump" action via Player Input Component
     public void OnJump(InputAction.CallbackContext context)
     {
-        // Check if the button was pressed down this frame AND player is grounded
-        if (context.started && isGrounded)
+        if (context.started)
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            jumpBufferCounter = jumpBufferTime;
         }
 
         // If the button is released and we are moving upwards, cut the jump short
-        if (context.canceled && rb.linearVelocity.y > 0f)
+        if (context.canceled)
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * jumpCutMultiplier);
+            if (rb.linearVelocity.y > 0f)
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * jumpCutMultiplier);
+            }
+            
+            jumpBufferCounter = 0f;
         }
     }
 
