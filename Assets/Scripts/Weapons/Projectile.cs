@@ -4,6 +4,7 @@ public class Projectile : MonoBehaviour
 {
     public float speed = 15f;
     public float lifeTime = 5f;
+    bool markDestroy = false;
 
     void Start()
     {
@@ -19,10 +20,16 @@ public class Projectile : MonoBehaviour
     {
         // Log the hit for now since there's no health script yet
         Debug.Log("Projectile hit: " + hitInfo.name);
-        
+
         // Avoid destroying on the player itself if it collides instantly
         if (!hitInfo.CompareTag("Player"))
         {
+            if (hitInfo.CompareTag("Enemy") && !markDestroy)
+            {
+                markDestroy = true;
+                var enemy = hitInfo.gameObject.GetComponent<Enemy>();
+                enemy.Hit();
+            }
             Destroy(gameObject);
         }
     }

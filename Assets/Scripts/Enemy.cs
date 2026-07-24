@@ -89,4 +89,9 @@ public class Enemy : MonoBehaviour
             rb.linearVelocityX = speed;
         }
     }
+
+    public void Hit()
+    {
+        Destroy(gameObject);
+    }
 }

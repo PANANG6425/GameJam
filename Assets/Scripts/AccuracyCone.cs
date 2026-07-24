@@ -3,12 +3,12 @@ using UnityEngine.InputSystem;
 
 public class AccuracyCone : MonoBehaviour
 {
-    
     LineRenderer lineRenderer;
     bool mouseHold = false;
     readonly float defaultAngle = 45;
-    float currentAngle = 0;
-    float baseAngle = 0;
+    float currentAngle = 0f;
+    float baseAngle = 0f;
+    public float AimSpeed = 0.1f;
 
     public float CurrentAngle => currentAngle;
     public float BaseAngle => baseAngle;
@@ -68,7 +68,7 @@ public class AccuracyCone : MonoBehaviour
             lineRenderer.SetPosition(0, apex + upperDir * 5);
             lineRenderer.SetPosition(1, apex);
             lineRenderer.SetPosition(2, apex + lowerDir * 5);
-            currentAngle = (currentAngle <= 0) ? 0 : currentAngle - 1;
+            currentAngle = (currentAngle <= 0) ? 0 : currentAngle - AimSpeed;
         }
     }
 }

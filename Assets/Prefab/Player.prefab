@@ -43,8 +43,8 @@ GameObject:
   - component: {fileID: 1991627258686112277}
   - component: {fileID: 4145760736281302851}
   - component: {fileID: 3430049824466746344}
-  - component: {fileID: 1861385157390409350}
   - component: {fileID: 2947662512590469630}
+  - component: {fileID: 1861385157390409350}
   - component: {fileID: 8859266303389752897}
   - component: {fileID: 5925777328643146368}
   - component: {fileID: 6279433426397295255}
@@ -197,31 +197,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &1861385157390409350
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2131039786939806048}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71f17c9b79209884c9576f32c42a72ee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  walkSpeed: 5
-  runSpeed: 10
-  acceleration: 30
-  deceleration: 40
-  jumpForce: 12
-  jumpCutMultiplier: 0.5
-  coyoteTime: 0.2
-  jumpBufferTime: 0.2
-  groundCheck: {fileID: 1096438001520174044}
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  groundCheckSize: {x: 0.5, y: 0.1}
 --- !u!114 &2947662512590469630
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -404,6 +379,31 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &1861385157390409350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2131039786939806048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71f17c9b79209884c9576f32c42a72ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  walkSpeed: 5
+  runSpeed: 10
+  acceleration: 30
+  deceleration: 40
+  jumpForce: 12
+  jumpCutMultiplier: 0.5
+  coyoteTime: 0.2
+  jumpBufferTime: 0.2
+  groundCheck: {fileID: 1096438001520174044}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  groundCheckSize: {x: 0.5, y: 0.1}
 --- !u!114 &8859266303389752897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -446,6 +446,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 292bacfa99f60204784d2e5f3bebaf65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AccuracyCone
+  AimSpeed: 0.5
 --- !u!1 &3091061368068868251
 GameObject:
   m_ObjectHideFlags: 0
