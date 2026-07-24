@@ -1,5 +1,13 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: 11f7fa6e084f1284fbda2c92a5773674
+=======
+<<<<<<< HEAD
+guid: fcaf15c6c480f9e4388960f31e1cdd0b
+=======
+guid: d91f6162f88b1ae4ea7732a003354ac8
+>>>>>>> f869a0239bbbaaf98970633c1cf526ccb11c640a
+>>>>>>> main
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -96,6 +104,25 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+=======
+>>>>>>> f869a0239bbbaaf98970633c1cf526ccb11c640a
+>>>>>>> main
   spriteSheet:
     serializedVersion: 2
     sprites:

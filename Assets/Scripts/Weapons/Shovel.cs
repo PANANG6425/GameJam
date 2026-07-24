@@ -3,8 +3,14 @@ using UnityEngine.InputSystem;
 
 public class Shovel : MonoBehaviour
 {
-    [SerializeField] private Collider2D attackCollider;
-    [SerializeField] private LayerMask enemyLayers;
+    [SerializeField]
+    private Collider2D attackCollider;
+
+    [SerializeField]
+    private LayerMask enemyLayers;
+
+    [SerializeField]
+    int damage = 2;
 
     private bool isAttacking = false;
 
@@ -50,6 +56,8 @@ public class Shovel : MonoBehaviour
         // Only register hits during an active attack and on the correct layers
         if (isAttacking && ((1 << other.gameObject.layer) & enemyLayers) != 0)
         {
+            var enemy = other.gameObject.GetComponent<Enemy>();
+            enemy.Hit(damage);
             Debug.Log("Shovel hit: " + other.name);
         }
     }

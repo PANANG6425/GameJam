@@ -3,14 +3,16 @@ using UnityEngine.InputSystem;
 
 public class AccuracyCone : MonoBehaviour
 {
-    
     LineRenderer lineRenderer;
     bool mouseHold = false;
     readonly float defaultAngle = 45;
-    float currentAngle = 0;
-    float baseAngle = 0;
+    float currentAngle = 0f;
+    float minAngle = 0f;
+    float baseAngle = 0f;
+    public float AimSpeed = 0.1f;
 
     public float CurrentAngle => currentAngle;
+    public float MinAngle => minAngle;
     public float BaseAngle => baseAngle;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -20,9 +22,9 @@ public class AccuracyCone : MonoBehaviour
         lineRenderer.positionCount = 0;
         lineRenderer.startWidth = 0.1f;
         lineRenderer.endWidth = 0.1f;
-        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-        lineRenderer.sortingLayerID = SortingLayer.NameToID("Player");
-        lineRenderer.sortingOrder = 10;
+        lineRenderer.material = new Material(Shader.Find("Custom/InvertUnlit"));
+        lineRenderer.sortingLayerID = SortingLayer.NameToID("VFX");
+        lineRenderer.sortingOrder = short.MaxValue;
 
         currentAngle = defaultAngle;
     }
@@ -41,6 +43,21 @@ public class AccuracyCone : MonoBehaviour
                 mouseHold = false;
                 break;
         }
+    }
+
+    public void SetBaseAngle(float angle)
+    {
+        baseAngle = angle;
+    }
+
+    public void SetMinAimAngle(float angle)
+    {
+        minAngle = angle;
+    }
+
+    public void SetAimSpeed(float speed)
+    {
+        AimSpeed = speed;
     }
 
     // Update is called once per frame
@@ -68,7 +85,8 @@ public class AccuracyCone : MonoBehaviour
             lineRenderer.SetPosition(0, apex + upperDir * 5);
             lineRenderer.SetPosition(1, apex);
             lineRenderer.SetPosition(2, apex + lowerDir * 5);
-            currentAngle = (currentAngle <= 0) ? 0 : currentAngle - 1;
+            Debug.Log(AimSpeed);
+            currentAngle = (currentAngle <= minAngle) ? minAngle : currentAngle - AimSpeed;
         }
     }
 }

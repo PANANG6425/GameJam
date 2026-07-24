@@ -10,9 +10,23 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     Area2D areaDetection;
 
+    [SerializeField]
+    HitPoint hp;
+
+    [Header("Ground Check")]
+    [SerializeField]
+    private Transform groundCheck;
+
+    [SerializeField]
+    private LayerMask groundLayer;
+
+    [SerializeField]
+    private Vector2 groundCheckSize = new Vector2(0.5f, 0.1f);
+
     Vector3 playerPos = new();
     bool detectedPlayer = false;
     bool nearPlayer = false;
+    bool isGrounded = true;
 
     void Start()
     {
@@ -22,6 +36,7 @@ public class Enemy : MonoBehaviour
             return;
         }
         rb = GetComponent<Rigidbody2D>();
+        hp = GetComponent<HitPoint>();
         areaDetection.onEnter.AddListener(OnPlayerEnter);
         areaDetection.onStay.AddListener(OnPlayerStay);
         areaDetection.onExit.AddListener(OnPlayerExit);
@@ -31,12 +46,13 @@ public class Enemy : MonoBehaviour
     {
         var distance = Vector3.Distance(transform.position, playerPos);
         nearPlayer = distance <= stopDistance;
+        isGrounded = Physics2D.OverlapBox(groundCheck.position, groundCheckSize, 0f, groundLayer);
 
         if (nearPlayer || !detectedPlayer)
         {
             rb.linearVelocityX = 0;
         }
-        else
+        else if (isGrounded)
         {
             MoveToPlayer(playerPos);
         }
@@ -87,6 +103,25 @@ public class Enemy : MonoBehaviour
         else
         {
             rb.linearVelocityX = speed;
+        }
+    }
+
+    public void Hit(int damage)
+    {
+        hp?.DecreaseHP(damage);
+        if (hp?.GetCurrentHP() <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        // Visualizes the ground check box in the Editor
+        if (groundCheck != null)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireCube(groundCheck.position, groundCheckSize);
         }
     }
 }
