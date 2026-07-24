@@ -3,7 +3,8 @@ using UnityEngine.InputSystem;
 
 public class Throw : MonoBehaviour
 {
-    public LineRenderer lineRenderer;
+    
+    LineRenderer lineRenderer;
     bool mouseHold = false;
     readonly float defaultAngle = 45;
     float currentAngle = 0;
@@ -47,8 +48,8 @@ public class Throw : MonoBehaviour
             Vector3 apex = transform.position;
 
             float baseAngle = Mathf.Atan2(mousePos.y - apex.y, mousePos.x - apex.x);
-            apex.y += 1;
-            apex.x += 0.5f;
+            //apex.y += 1;
+            //apex.x += 0.5f;
 
             Vector3 upperDir = new(
                 Mathf.Cos(baseAngle + radians),

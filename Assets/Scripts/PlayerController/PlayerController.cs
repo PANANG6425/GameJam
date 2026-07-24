@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 8f;
     [SerializeField] private float jumpForce = 12f;
+    [SerializeField] private float jumpCutMultiplier = 0.5f;
     
     [Header("Ground Check")]
     [SerializeField] private Transform groundCheck;
@@ -16,10 +17,16 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private float horizontalInput;
     private bool isGrounded;
+    private CapsuleCollider2D capsuleCollider;
+    private float originalHeight;
+    private float originalOffset;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        capsuleCollider = GetComponent<CapsuleCollider2D>();
+        originalHeight = capsuleCollider.size.y;
+        originalOffset = capsuleCollider.offset.y;
     }
 
     private void FixedUpdate()
@@ -46,6 +53,12 @@ public class PlayerController : MonoBehaviour
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
         }
+
+        // If the button is released and we are moving upwards, cut the jump short
+        if (context.canceled && rb.linearVelocity.y > 0f)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * jumpCutMultiplier);
+        }
     }
 
     private void OnDrawGizmosSelected()
@@ -55,6 +68,20 @@ public class PlayerController : MonoBehaviour
         {
             Gizmos.color = Color.green;
             Gizmos.DrawWireCube(groundCheck.position, groundCheckSize);
+        }
+    }
+
+    public void OnCrouch(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            capsuleCollider.size = new Vector2(capsuleCollider.size.x, originalHeight / 2f);
+            capsuleCollider.offset = new Vector2(capsuleCollider.offset.x, originalOffset - (originalHeight / 4f));
+        }
+        else if (context.canceled)
+        {
+            capsuleCollider.size = new Vector2(capsuleCollider.size.x, originalHeight);
+            capsuleCollider.offset = new Vector2(capsuleCollider.offset.x, originalOffset);
         }
     }
 }
