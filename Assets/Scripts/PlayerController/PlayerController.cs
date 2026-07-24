@@ -49,6 +49,7 @@ public class PlayerController : MonoBehaviour
     private CapsuleCollider2D capsuleCollider;
     private float originalHeight;
     private float originalOffset;
+    private Animator animator;
 
     private void Awake()
     {
@@ -56,31 +57,33 @@ public class PlayerController : MonoBehaviour
         capsuleCollider = GetComponent<CapsuleCollider2D>();
         originalHeight = capsuleCollider.size.y;
         originalOffset = capsuleCollider.offset.y;
+        animator = GetComponentInChildren<Animator>();
     }
 
     private void Update()
     {
-        // Flip the player to face the mouse cursor direction
-        if (Camera.main != null)
+        // Flip the player to face the direction they are walking
+        if (horizontalInput > 0.01f)
         {
-            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+            transform.localScale = new Vector3(
+                Mathf.Abs(transform.localScale.x),
+                transform.localScale.y,
+                transform.localScale.z
+            );
+        }
+        else if (horizontalInput < -0.01f)
+        {
+            transform.localScale = new Vector3(
+                -Mathf.Abs(transform.localScale.x),
+                transform.localScale.y,
+                transform.localScale.z
+            );
+        }
 
-            if (mousePos.x > transform.position.x)
-            {
-                transform.localScale = new Vector3(
-                    Mathf.Abs(transform.localScale.x),
-                    transform.localScale.y,
-                    transform.localScale.z
-                );
-            }
-            else if (mousePos.x < transform.position.x)
-            {
-                transform.localScale = new Vector3(
-                    -Mathf.Abs(transform.localScale.x),
-                    transform.localScale.y,
-                    transform.localScale.z
-                );
-            }
+        // Update walk animation
+        if (animator != null)
+        {
+            animator.SetBool("IsWalking", Mathf.Abs(horizontalInput) > 0.01f);
         }
     }
 
