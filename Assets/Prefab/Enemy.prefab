@@ -132,11 +132,11 @@ GameObject:
   m_Component:
   - component: {fileID: 423770326277043412}
   - component: {fileID: 629431109235486792}
-  - component: {fileID: 8316607478068181675}
   - component: {fileID: 1590990285765219209}
   - component: {fileID: 8316607478068181676}
   - component: {fileID: 5276964904136683103}
   - component: {fileID: 8941803009690362606}
+  - component: {fileID: 3200387172775484240}
   m_Layer: 8
   m_Name: Enemy
   m_TagString: Enemy
@@ -190,21 +190,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &8316607478068181675
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4574165161649697101}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e638b0357709cb45b67fbddc089adbc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  areaDetection: {fileID: 6136571083762738925}
-  deathParticles: {fileID: 5788717394860688335}
-  knockbackDuration: 0.2
 --- !u!114 &1590990285765219209
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -298,6 +283,21 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 0.5, y: 1}
   m_Direction: 0
+--- !u!114 &3200387172775484240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4574165161649697101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e638b0357709cb45b67fbddc089adbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  areaDetection: {fileID: 6136571083762738925}
+  deathParticles: {fileID: 5788717394860688335}
+  knockbackDuration: 0.2
 --- !u!1 &7830385183244459593
 GameObject:
   m_ObjectHideFlags: 0
@@ -400,6 +400,10 @@ PrefabInstance:
     - target: {fileID: 10356102132869884, guid: b98ef1c427e08d5459aeafad45a13849, type: 3}
       propertyPath: m_Name
       value: EnemyDrownerr
+      objectReference: {fileID: 0}
+    - target: {fileID: 615205843780809477, guid: b98ef1c427e08d5459aeafad45a13849, type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 3797824383477336718, guid: b98ef1c427e08d5459aeafad45a13849, type: 3}
       propertyPath: m_LocalPosition.x

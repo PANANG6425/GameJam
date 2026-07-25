@@ -5,39 +5,39 @@ using UnityEngine;
 [RequireComponent(typeof(EnemyMovement))]
 public class Enemy : MonoBehaviour
 {
-    EnemyMovement movement;
+    protected EnemyMovement movement;
 
     [SerializeField]
-    Area2D areaDetection;
+    protected Area2D areaDetection;
 
-    HitPoint hp;
+    protected HitPoint hp;
 
-    Rigidbody2D rb;
-    Animator animator;
+    protected Rigidbody2D rb;
+    protected Animator animator;
 
     [SerializeField]
-    ParticleSystem deathParticles;
+    protected ParticleSystem deathParticles;
 
-    bool isDead = false;
+    protected bool isDead = false;
 
-    Vector3 playerPos = new();
+    protected Vector3 playerPos = new();
 
     // Status effects
-    float stunTimer = 0f;
-    int burnDamagePerTick;
-    float burnTickInterval = 0.5f;
-    float burnTickTimer;
-    float burnRemaining;
+    protected float stunTimer = 0f;
+    protected int burnDamagePerTick;
+    protected float burnTickInterval = 0.5f;
+    protected float burnTickTimer;
+    protected float burnRemaining;
 
     [Tooltip("How long the enemy rides a knockback (chase disabled) before regaining control.")]
     [SerializeField]
-    float knockbackDuration = 0.2f;
+    protected float knockbackDuration = 0.2f;
 
-    float knockbackTimer = 0f;
+    protected float knockbackTimer = 0f;
 
     public bool IsStunned => stunTimer > 0f;
 
-    void Start()
+    protected virtual void Start()
     {
         if (areaDetection == null)
         {
@@ -57,7 +57,7 @@ public class Enemy : MonoBehaviour
         areaDetection.onExit.AddListener(OnPlayerExit);
     }
 
-    void Update()
+    protected virtual void Update()
     {
         if (isDead) return;
 
@@ -93,7 +93,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
         // While being knocked back, let the impulse ride freely (no chase, and
         // don't zero the velocity like the stun does below).
@@ -113,14 +113,14 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    void OnDestroy()
+    protected virtual void OnDestroy()
     {
         areaDetection.onEnter.RemoveListener(OnPlayerEnter);
         areaDetection.onStay.RemoveListener(OnPlayerStay);
         areaDetection.onExit.RemoveListener(OnPlayerExit);
     }
 
-    void OnPlayerEnter(Collider2D collider)
+    protected virtual void OnPlayerEnter(Collider2D collider)
     {
         var obj = collider.gameObject;
         if (obj.tag == "Player")
@@ -131,7 +131,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    void OnPlayerStay(Collider2D collider)
+    protected virtual void OnPlayerStay(Collider2D collider)
     {
         var obj = collider.gameObject;
         if (obj.tag == "Player")
@@ -141,7 +141,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    void OnPlayerExit(Collider2D collider)
+    protected virtual void OnPlayerExit(Collider2D collider)
     {
         var obj = collider.gameObject;
         if (obj.tag == "Player")
@@ -150,7 +150,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void Hit(int damage)
+    public virtual void Hit(int damage)
     {
         if (isDead) return;
 
@@ -165,7 +165,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void Die()
+    protected virtual void Die()
     {
         isDead = true;
         
@@ -189,7 +189,7 @@ public class Enemy : MonoBehaviour
         StartCoroutine(DeathSequence());
     }
 
-    private IEnumerator DeathSequence()
+    protected virtual IEnumerator DeathSequence()
     {
         if (animator != null)
         {

@@ -3,7 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class EnemyMovement : MonoBehaviour
 {
-    Rigidbody2D rb;
+    protected Rigidbody2D rb;
     public float speed = 5f;
     public float stopDistance = 1.5f;
 
@@ -15,21 +15,24 @@ public class EnemyMovement : MonoBehaviour
     private LayerMask groundLayer;
 
     [SerializeField]
-    private Vector2 groundCheckSize = new Vector2(0.5f, 0.1f);
+    protected Vector2 groundCheckSize = new Vector2(0.5f, 0.1f);
 
-    Vector3 targetPos = new();
-    bool isChasing = false;
-    bool nearTarget = false;
-    bool isGrounded = true;
+    protected Vector3 targetPos = new();
+    protected bool isChasing = false;
+    protected bool nearTarget = false;
+    protected bool isGrounded = true;
 
     public bool pauseMovement = false;
     public bool NearTarget => nearTarget;
 
     [Header("Animation")]
     [SerializeField]
-    private Animator animator;
+    protected string moveAnimParam = "IsWalking";
 
-    void Start()
+    [SerializeField]
+    protected Animator animator;
+
+    protected virtual void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         if (animator == null)
@@ -39,11 +42,11 @@ public class EnemyMovement : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
         if (pauseMovement)
         {
-            if (animator != null) animator.SetBool("IsWalking", false);
+            if (animator != null && !string.IsNullOrEmpty(moveAnimParam)) animator.SetBool(moveAnimParam, false);
             return;
         }
 
@@ -63,9 +66,9 @@ public class EnemyMovement : MonoBehaviour
             isWalking = true;
         }
 
-        if (animator != null)
+        if (animator != null && !string.IsNullOrEmpty(moveAnimParam))
         {
-            animator.SetBool("IsWalking", isWalking);
+            animator.SetBool(moveAnimParam, isWalking);
         }
     }
 
@@ -80,7 +83,7 @@ public class EnemyMovement : MonoBehaviour
         isChasing = chasing;
     }
 
-    void MoveToTarget(Vector3 targetPos)
+    protected virtual void MoveToTarget(Vector3 targetPos)
     {
         if (transform.position.x > targetPos.x)
         {
@@ -102,7 +105,7 @@ public class EnemyMovement : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmosSelected()
+    protected virtual void OnDrawGizmosSelected()
     {
         // Visualizes the ground check box in the Editor
         if (groundCheck != null)
