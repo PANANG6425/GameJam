@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 // Combat input router. The revolver is the main weapon (always active); melee is
@@ -14,6 +15,14 @@ public class WeaponManager : MonoBehaviour
 {
     private Revolver revolver;
     private Shovel shovel;
+    private bool suppressFireUntilRelease;
+
+    // IsPointerOverGameObject() reflects last frame's UI state when read from
+    // within an input callback (the EventSystem hasn't processed this frame's
+    // pointer event yet at that point), so it's cached once per frame here -
+    // in LateUpdate, after EventSystem's own Update has run - and the cached
+    // value is what OnFire reads.
+    private bool pointerOverUI;
 
     private void Awake()
     {
@@ -41,6 +50,26 @@ public class WeaponManager : MonoBehaviour
     // Left-click ("Attack") - aim on press, fire on release.
     public void OnFire(InputAction.CallbackContext context)
     {
+        // Ignore clicks that start on UI (e.g. buttons) so pressing UI doesn't
+        // also trigger aiming/firing. Keep suppressing until release so a drag
+        // off the UI element mid-press can't leak a fire.
+        if (context.started)
+        {
+            suppressFireUntilRelease = pointerOverUI;
+            if (suppressFireUntilRelease)
+            {
+                return;
+            }
+        }
+        else if (suppressFireUntilRelease)
+        {
+            if (context.canceled)
+            {
+                suppressFireUntilRelease = false;
+            }
+            return;
+        }
+
         revolver?.OnFire(context);
     }
 

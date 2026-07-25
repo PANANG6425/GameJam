@@ -73,6 +73,7 @@ public class PlayerController : MonoBehaviour
     private Revolver revolver;
     private HitPoint hp;
 
+    private HitPoint playerHp;
 
     private void Awake()
     {

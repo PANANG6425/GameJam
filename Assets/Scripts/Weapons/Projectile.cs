@@ -32,16 +32,19 @@ public class Projectile : MonoBehaviour
             return;
         }
 
-        Enemy directHit = hitInfo.CompareTag("Enemy") ? hitInfo.GetComponent<Enemy>() : null;
-
-        if (!markDestroy)
+        if (hitInfo.CompareTag("Enemy"))
         {
-            ApplyEffect(directHit);
-            GlobalEvent.IncreaseMadness.Invoke(GlobalData.MADNESS_ATK);
+            Enemy directHit = hitInfo.GetComponent<Enemy>();
+            if (!markDestroy)
+            {
+                ApplyEffect(directHit);
+                GlobalEvent.IncreaseMadness.Invoke(GlobalData.MADNESS_ATK);
+            }
         }
 
         markDestroy = true;
         Destroy(gameObject);
+
     }
 
     private void ApplyEffect(Enemy directHit)

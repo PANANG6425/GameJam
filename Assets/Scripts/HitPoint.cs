@@ -30,7 +30,7 @@ public class HitPoint : MonoBehaviour
     public void IncreaseHP(int amount)
     {
         currentHP += amount;
-        currentHP = (currentHP < max_hp) ? max_hp : currentHP;
+        currentHP = (currentHP > max_hp) ? max_hp : currentHP;
     }
 
     public void DecreaseHP(int amount)

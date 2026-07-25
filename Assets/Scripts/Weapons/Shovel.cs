@@ -123,6 +123,8 @@ public class Shovel : MonoBehaviour
         enemy.ApplyStun(stunDuration);
         if (GlobalEvent.Instance != null) GlobalEvent.Instance.TriggerHitStop(0.1f);
 
+        GlobalEvent.IncreaseMadness.Invoke(GlobalData.MADNESS_ATK);
+
         // Push the enemy away from the player (this component sits on the player root).
         Vector2 dir = other.transform.position - transform.position;
         dir.y = 0f;
