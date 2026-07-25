@@ -1,20 +1,20 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GlobalEvent : MonoBehaviour
 {
     public static GlobalEvent Instance { get; private set; }
 
     public static readonly Event<int> IncreaseMadness = new();
+    public static readonly Event ResetMadness = new();
     public static readonly Event<int> IncreaseHealth = new();
     public static readonly Event<int, int> HealthChange = new();
     public static readonly Event<int, int> MadnessChange = new();
 
     public static readonly Event<int, int> AmmoChange = new();
-
-    // Fired when the player takes a hit - lets the player cancel/interrupt whatever
-    // action it was doing (aiming, quick-firing, melee).
     public static readonly Event PlayerHit = new();
+    public int curPlayerMaxHP;
 
     void Awake()
     {
@@ -39,7 +39,8 @@ public class GlobalEvent : MonoBehaviour
 
     public void TriggerHitStop(float duration = 5f)
     {
-        if (isHitStopping) return;
+        if (isHitStopping)
+            return;
         StartCoroutine(HitStopRoutine(duration));
     }
 
@@ -50,5 +51,21 @@ public class GlobalEvent : MonoBehaviour
         yield return new WaitForSecondsRealtime(duration);
         Time.timeScale = 1f;
         isHitStopping = false;
+    }
+
+    public void OnHealthChange()
+    {
+        curPlayerMaxHP = maxHP;
+        Debug.Log("CurrentHP: " + currentHP + ", MaxHP: " + maxHP);
+    }
+
+    public void Heal()
+    {
+        GlobalEvent.IncreaseHealth.Invoke((int)(curPlayerMaxHP * 0.3));
+    }
+
+    public void OnMadnessSkillUse()
+    {
+        ResetMadness.Invoke();
     }
 }

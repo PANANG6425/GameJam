@@ -10,11 +10,13 @@ public class Madness : MonoBehaviour
     {
         GlobalEvent.IncreaseMadness.AddListener(Increase);
         GlobalEvent.MadnessChange.Invoke(currentMadness, maxMadness);
+        GlobalEvent.ResetMadness.AddListener(Reset);
     }
 
     public void OnDestroy()
     {
         GlobalEvent.IncreaseMadness.RemoveListener(Increase);
+        GlobalEvent.ResetMadness.RemoveListener(Reset);
     }
 
     public void Increase(int amount)
