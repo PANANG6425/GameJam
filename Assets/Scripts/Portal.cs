@@ -7,9 +7,17 @@ public class Portal : MonoBehaviour
     [SerializeField]
     Portal connectingDoor;
 
+    [SerializeField]
+    GameObject banner;
+
     // True while the player is standing inside this portal's trigger.
     private bool playerInRange;
     Transform playerTranform;
+
+    void Start()
+    {
+        banner.SetActive(false);
+    }
 
     void Update()
     {
@@ -28,6 +36,7 @@ public class Portal : MonoBehaviour
         {
             playerTranform = collider.gameObject.transform;
             playerInRange = true;
+            banner.SetActive(true);
         }
     }
 
@@ -37,6 +46,7 @@ public class Portal : MonoBehaviour
         {
             playerTranform = null;
             playerInRange = false;
+            banner.SetActive(false);
         }
     }
 }
