@@ -47,7 +47,8 @@ GameObject:
   - component: {fileID: 8859266303389752897}
   - component: {fileID: 5925777328643146368}
   - component: {fileID: 6279433426397295255}
-  - component: {fileID: 4121157929737062350}
+  - component: {fileID: 6600123456789012345}
+  - component: {fileID: 4121157929737062351}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -412,7 +413,6 @@ MonoBehaviour:
   BaseAimAngle: 45
   MinAimAngle: 10
   AimSpeed: 0.1
-<<<<<<< HEAD
   cylinderCapacity: 6
   reloadTime: 1
   specialAmmoCapCylinders: 10
@@ -480,8 +480,6 @@ MonoBehaviour:
     explosionPrefab: {fileID: 0}
     stunDuration: 1.5
     gasCloudPrefab: {fileID: 0}
-=======
->>>>>>> 7d1d471 (feat: enemy melee attack with hitbox and madness system)
 --- !u!114 &6279433426397295255
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -495,11 +493,7 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::AccuracyCone
   AimSpeed: 0.5
-<<<<<<< HEAD
 --- !u!114 &6600123456789012345
-=======
---- !u!114 &4121157929737062350
->>>>>>> 7d1d471 (feat: enemy melee attack with hitbox and madness system)
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -508,16 +502,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 2131039786939806048}
   m_Enabled: 1
   m_EditorHideFlags: 0
-<<<<<<< HEAD
   m_Script: {fileID: 11500000, guid: 5e1d3c7b9a2f4068135a7c9e1b3d5f70, type: 3}
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::WeaponManager
-=======
+--- !u!114 &4121157929737062351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2131039786939806048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b7bc2f91301754b4e9d48e663aba879f, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::HitPoint
   max_hp: 10
->>>>>>> 7d1d471 (feat: enemy melee attack with hitbox and madness system)
 --- !u!1 &3091061368068868251
 GameObject:
   m_ObjectHideFlags: 0
