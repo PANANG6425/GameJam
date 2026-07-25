@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(HitPoint))]
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
@@ -73,8 +74,6 @@ public class PlayerController : MonoBehaviour
     private Revolver revolver;
     private HitPoint hp;
 
-    private HitPoint playerHp;
-
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -89,6 +88,16 @@ public class PlayerController : MonoBehaviour
         {
             hp.onDamageTaken.AddListener(OnPlayerHit);
         }
+    }
+
+    void Start()
+    {
+        GlobalEvent.IncreaseHealth.AddListener(HealPlayer);
+    }
+
+    void HealPlayer(int amount)
+    {
+        hp.IncreaseHP(amount);
     }
 
     private void OnDestroy()
@@ -111,7 +120,6 @@ public class PlayerController : MonoBehaviour
         locoState = LocoState.Hit;
         hitReactRequested = true;
     }
-
 
     private void Update()
     {
@@ -164,7 +172,8 @@ public class PlayerController : MonoBehaviour
             var info = animator.GetCurrentAnimatorStateInfo(0);
             if (info.IsName("Anim_Hit"))
             {
-                if (info.normalizedTime >= 1f) SetLocoState(LocoState.Grounded);
+                if (info.normalizedTime >= 1f)
+                    SetLocoState(LocoState.Grounded);
             }
             else if (!animator.GetNextAnimatorStateInfo(0).IsName("Anim_Hit"))
             {
@@ -257,7 +266,8 @@ public class PlayerController : MonoBehaviour
         float currentHorizontalInput = cantMove ? 0f : horizontalInput;
 
         // Calculate target speed (cannot run while crouching)
-        float targetSpeed = currentHorizontalInput * ((isRunning && !isCrouching) ? runSpeed : walkSpeed);
+        float targetSpeed =
+            currentHorizontalInput * ((isRunning && !isCrouching) ? runSpeed : walkSpeed);
 
         // Choose acceleration or deceleration based on whether we are providing input
         float accelRate = (Mathf.Abs(currentHorizontalInput) > 0.01f) ? acceleration : deceleration;

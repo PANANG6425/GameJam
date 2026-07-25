@@ -1,6 +1,4 @@
-using System;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class GlobalEvent : MonoBehaviour
 {
@@ -29,12 +27,6 @@ public class GlobalEvent : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start() { }
-
-    // Update is called once per frame
-    void Update() { }
-
     private bool isHitStopping = false;
 
     public void TriggerHitStop(float duration = 5f)
@@ -53,7 +45,7 @@ public class GlobalEvent : MonoBehaviour
         isHitStopping = false;
     }
 
-    public void OnHealthChange()
+    public void OnHealthChange(int currentHP, int maxHP)
     {
         curPlayerMaxHP = maxHP;
         Debug.Log("CurrentHP: " + currentHP + ", MaxHP: " + maxHP);
@@ -61,7 +53,7 @@ public class GlobalEvent : MonoBehaviour
 
     public void Heal()
     {
-        GlobalEvent.IncreaseHealth.Invoke((int)(curPlayerMaxHP * 0.3));
+        IncreaseHealth.Invoke((int)(curPlayerMaxHP * 0.3));
     }
 
     public void OnMadnessSkillUse()
