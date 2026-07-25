@@ -1,11 +1,10 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
+[RequireComponent(typeof(EnemyMovement))]
 public class Enemy : MonoBehaviour
 {
-    Rigidbody2D rb;
-    public float speed = 5f;
-    public float stopDistance = 1.5f;
+    EnemyMovement movement;
 
     [SerializeField]
     Area2D areaDetection;
@@ -13,20 +12,7 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     HitPoint hp;
 
-    [Header("Ground Check")]
-    [SerializeField]
-    private Transform groundCheck;
-
-    [SerializeField]
-    private LayerMask groundLayer;
-
-    [SerializeField]
-    private Vector2 groundCheckSize = new Vector2(0.5f, 0.1f);
-
     Vector3 playerPos = new();
-    bool detectedPlayer = false;
-    bool nearPlayer = false;
-    bool isGrounded = true;
 
     // Status effects
     float stunTimer = 0f;
@@ -50,7 +36,7 @@ public class Enemy : MonoBehaviour
             Debug.LogError("Missing Area2D");
             return;
         }
-        rb = GetComponent<Rigidbody2D>();
+        movement = GetComponent<EnemyMovement>();
         hp = GetComponent<HitPoint>();
         areaDetection.onEnter.AddListener(OnPlayerEnter);
         areaDetection.onStay.AddListener(OnPlayerStay);
@@ -104,19 +90,6 @@ public class Enemy : MonoBehaviour
             }
             return;
         }
-
-        var distance = Vector3.Distance(transform.position, playerPos);
-        nearPlayer = distance <= stopDistance;
-        isGrounded = Physics2D.OverlapBox(groundCheck.position, groundCheckSize, 0f, groundLayer);
-
-        if (nearPlayer || !detectedPlayer)
-        {
-            rb.linearVelocityX = 0;
-        }
-        else if (isGrounded)
-        {
-            MoveToPlayer(playerPos);
-        }
     }
 
     void OnDestroy()
@@ -131,9 +104,9 @@ public class Enemy : MonoBehaviour
         var obj = collider.gameObject;
         if (obj.tag == "Player")
         {
-            detectedPlayer = true;
             playerPos = obj.transform.position;
-            Debug.Log($"[Enemy] detected player at {playerPos}");
+            movement.SetChasing(true);
+            movement.SetTarget(playerPos);
         }
     }
 
@@ -143,6 +116,7 @@ public class Enemy : MonoBehaviour
         if (obj.tag == "Player")
         {
             playerPos = obj.transform.position;
+            movement.SetTarget(playerPos);
         }
     }
 
@@ -151,19 +125,7 @@ public class Enemy : MonoBehaviour
         var obj = collider.gameObject;
         if (obj.tag == "Player")
         {
-            detectedPlayer = false;
-        }
-    }
-
-    void MoveToPlayer(Vector3 playerPos)
-    {
-        if (transform.position.x > playerPos.x)
-        {
-            rb.linearVelocityX = -speed;
-        }
-        else
-        {
-            rb.linearVelocityX = speed;
+            movement.SetChasing(false);
         }
     }
 
@@ -207,16 +169,6 @@ public class Enemy : MonoBehaviour
         if (burnTickTimer <= 0f)
         {
             burnTickTimer = burnTickInterval;
-        }
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        // Visualizes the ground check box in the Editor
-        if (groundCheck != null)
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireCube(groundCheck.position, groundCheckSize);
         }
     }
 }

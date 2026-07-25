@@ -24,10 +24,13 @@ public class HitPoint : MonoBehaviour
     public void IncreaseHP(int amount)
     {
         currentHP += amount;
+        currentHP = (currentHP < max_hp) ? max_hp : currentHP;
     }
 
     public void DecreaseHP(int amount)
     {
         currentHP -= amount;
+        currentHP = (currentHP < 0) ? 0 : currentHP;
+        Debug.Log("CurrentHP:" + currentHP);
     }
 }
