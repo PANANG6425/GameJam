@@ -9,10 +9,10 @@ public class EnemyMovement : MonoBehaviour
 
     [Header("Ground Check")]
     [SerializeField]
-    private Transform groundCheck;
+    protected Transform groundCheck;
 
     [SerializeField]
-    private LayerMask groundLayer;
+    protected LayerMask groundLayer;
 
     [SerializeField]
     protected Vector2 groundCheckSize = new Vector2(0.5f, 0.1f);
