@@ -71,6 +71,7 @@ public class PlayerController : MonoBehaviour
     private Animator animator;
     private Revolver revolver;
 
+    private HitPoint playerHp;
 
     private void Awake()
     {
@@ -80,6 +81,28 @@ public class PlayerController : MonoBehaviour
         originalOffset = capsuleCollider.offset.y;
         animator = GetComponentInChildren<Animator>();
         revolver = GetComponentInChildren<Revolver>();
+        playerHp = GetComponent<HitPoint>();
+    }
+
+    private void Start()
+    {
+        if (animator == null)
+        {
+            Debug.LogError("PlayerController: Missing Animator component.");
+        }
+        GlobalEvent.HealthChange.Invoke(playerHp.CurrentHP, playerHp.MaxHP);
+        GlobalEvent.IncreaseHealth.AddListener(OnIncreaseHealth);
+    }
+
+    private void OnDestroy()
+    {
+        GlobalEvent.IncreaseHealth.RemoveListener(OnIncreaseHealth);
+    }
+
+    private void OnIncreaseHealth(int amount)
+    {
+        playerHp.IncreaseHP(amount);
+        GlobalEvent.HealthChange.Invoke(playerHp.CurrentHP, playerHp.MaxHP);
     }
 
 

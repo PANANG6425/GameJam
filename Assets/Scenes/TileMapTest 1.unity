@@ -364,6 +364,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc34a7bd13955814da7e6d278e1edf7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GlobalEvent
+  curPlayerMaxHP: 0
 --- !u!114 &630383454
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -435,7 +436,7 @@ GameObject:
   - component: {fileID: 992958547}
   - component: {fileID: 992958546}
   m_Layer: 5
-  m_Name: Button
+  m_Name: HealButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -504,7 +505,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 992958547}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 630383453}
+        m_TargetAssemblyTypeName: GlobalEvent, Assembly-CSharp
+        m_MethodName: Heal
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &992958547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1582,7 +1595,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5276964904136683103, guid: 583f6dea14c444e4eb84ac07b5cffa39, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5276964904136683103, guid: 583f6dea14c444e4eb84ac07b5cffa39, type: 3}
       propertyPath: attackCooldown
@@ -1598,7 +1611,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8316607478068181676, guid: 583f6dea14c444e4eb84ac07b5cffa39, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8316607478068181676, guid: 583f6dea14c444e4eb84ac07b5cffa39, type: 3}
       propertyPath: stopDistance

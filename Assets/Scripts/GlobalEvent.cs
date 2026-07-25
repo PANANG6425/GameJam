@@ -6,10 +6,13 @@ public class GlobalEvent : MonoBehaviour
     public static GlobalEvent Instance { get; private set; }
 
     public static readonly Event<int> IncreaseMadness = new();
+    public static readonly Event<int> IncreaseHealth = new();
     public static readonly Event<int, int> HealthChange = new();
     public static readonly Event<int, int> MadnessChange = new();
 
     public static readonly Event<int, int> AmmoChange = new();
+
+    public int curPlayerMaxHP;
 
     void Awake()
     {
@@ -22,11 +25,22 @@ public class GlobalEvent : MonoBehaviour
         Instance = this;
 
         DontDestroyOnLoad(gameObject);
+        HealthChange.AddListener(OnHealthChange);
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start() { }
+    void OnDestroy()
+    {
+        HealthChange.RemoveListener(OnHealthChange);
+    }
 
-    // Update is called once per frame
-    void Update() { }
+    public void OnHealthChange(int currentHP, int maxHP)
+    {
+        curPlayerMaxHP = maxHP;
+        Debug.Log("CurrentHP: " + currentHP + ", MaxHP: " + maxHP);
+    }
+
+    public void Heal()
+    {
+        GlobalEvent.IncreaseHealth.Invoke((int)(curPlayerMaxHP * 0.3));
+    }
 }
