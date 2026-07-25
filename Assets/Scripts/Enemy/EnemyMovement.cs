@@ -22,18 +22,36 @@ public class EnemyMovement : MonoBehaviour
     bool nearTarget = false;
     bool isGrounded = true;
 
+    public bool pauseMovement = false;
     public bool NearTarget => nearTarget;
+
+    [Header("Animation")]
+    [SerializeField]
+    private Animator animator;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        if (animator == null)
+        {
+            animator = GetComponentInChildren<Animator>();
+            if (animator == null) animator = GetComponent<Animator>();
+        }
     }
 
     void FixedUpdate()
     {
+        if (pauseMovement)
+        {
+            if (animator != null) animator.SetBool("IsWalking", false);
+            return;
+        }
+
         var distance = Vector3.Distance(transform.position, targetPos);
         nearTarget = distance <= stopDistance;
         isGrounded = Physics2D.OverlapBox(groundCheck.position, groundCheckSize, 0f, groundLayer);
+
+        bool isWalking = false;
 
         if (nearTarget || !isChasing)
         {
@@ -42,8 +60,15 @@ public class EnemyMovement : MonoBehaviour
         else if (isGrounded)
         {
             MoveToTarget(targetPos);
+            isWalking = true;
+        }
+
+        if (animator != null)
+        {
+            animator.SetBool("IsWalking", isWalking);
         }
     }
+
 
     public void SetTarget(Vector3 position)
     {

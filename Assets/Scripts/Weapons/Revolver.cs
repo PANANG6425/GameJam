@@ -96,6 +96,8 @@ public class Revolver : MonoBehaviour
     private Animator animator;
     private PlayerController playerController;
     private bool isQuickFiring;
+    private Coroutine quickFireRoutine;
+    private bool aimInterrupted;
 
     private void Awake()
     {
@@ -162,6 +164,7 @@ public class Revolver : MonoBehaviour
             // Aiming: the animator's Any State -> Anim_Revolver transition (driven
             // by the IsAiming bool) forces the aim pose, overriding walk/run so the
             // player visibly stops and raises the revolver.
+            aimInterrupted = false;
             IsAiming = true;
             if (animator != null)
             {
@@ -176,6 +179,18 @@ public class Revolver : MonoBehaviour
             if (animator != null)
             {
                 animator.SetBool("IsAiming", false);
+            }
+
+            // If the aim was interrupted (e.g. the player got hit) the release
+            // shouldn't fire - just consume it.
+            if (aimInterrupted)
+            {
+                aimInterrupted = false;
+                return;
+            }
+
+            if (animator != null)
+            {
                 animator.Play("Anim_Fired");
             }
             Shoot();
@@ -226,6 +241,30 @@ public class Revolver : MonoBehaviour
             }
         }
         accuracyCone?.Hide();
+    }
+
+    // Called when the player is hit - drop any in-progress revolver action so the
+    // aim / burst is interrupted. (Reloading is left to finish.)
+    public void Interrupt()
+    {
+        // If the player was holding aim, suppress the shot that would otherwise
+        // fire when they release the button.
+        if (IsAiming)
+        {
+            aimInterrupted = true;
+        }
+
+        CancelAim();
+
+        if (isQuickFiring)
+        {
+            if (quickFireRoutine != null)
+            {
+                StopCoroutine(quickFireRoutine);
+                quickFireRoutine = null;
+            }
+            isQuickFiring = false;
+        }
     }
 
     private void Shoot()
@@ -308,7 +347,7 @@ public class Revolver : MonoBehaviour
             return;
         }
 
-        StartCoroutine(QuickFireRoutine());
+        quickFireRoutine = StartCoroutine(QuickFireRoutine());
     }
 
     // Point the shot at the mouse and flip the player to face it. Quick-fire

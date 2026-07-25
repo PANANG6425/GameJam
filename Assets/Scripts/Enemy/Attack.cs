@@ -17,6 +17,8 @@ public class Attack : MonoBehaviour
     private Animator animator;
     [SerializeField]
     private string attackAnimationName = "AnimEnemyAttack";
+    [SerializeField]
+    private float attackHitboxDelay = 0.33f;
 
     EnemyMovement movement;
     Collider2D hitAreaCollider;
@@ -25,6 +27,7 @@ public class Attack : MonoBehaviour
     bool detectedPlayer = false;
     bool isAttackWindowOpen = false;
     float cooldownTimer = 0f;
+    float currentAttackDelay = 0f;
 
     void Start()
     {
@@ -65,6 +68,11 @@ public class Attack : MonoBehaviour
     void FixedUpdate()
     {
         cooldownTimer = Mathf.Max(0f, cooldownTimer - Time.fixedDeltaTime);
+        
+        if (currentAttackDelay > 0f)
+        {
+            currentAttackDelay -= Time.fixedDeltaTime;
+        }
 
         if (!detectedPlayer || cooldownTimer > 0f)
         {
@@ -76,9 +84,18 @@ public class Attack : MonoBehaviour
             if (!isAttackWindowOpen)
             {
                 isAttackWindowOpen = true;
+                currentAttackDelay = attackHitboxDelay;
                 if (animator != null && !string.IsNullOrEmpty(attackAnimationName))
                 {
-                    animator.Play(attackAnimationName);
+                    int stateHash = Animator.StringToHash(attackAnimationName);
+                    if (animator.HasState(0, stateHash))
+                    {
+                        animator.Play(stateHash);
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Attack animation '{attackAnimationName}' not found on Animator for {animator.gameObject.name}.");
+                    }
                 }
             }
         }
@@ -87,6 +104,7 @@ public class Attack : MonoBehaviour
         // so check for overlap directly instead of only relying on the event.
         if (
             isAttackWindowOpen
+            && currentAttackDelay <= 0f
             && playerCollider != null
             && hitAreaCollider.IsTouching(playerCollider)
         )
@@ -98,14 +116,16 @@ public class Attack : MonoBehaviour
     void HitPlayer(Collider2D collider)
     {
         // Debug.Log("In hit box");
-        if (!isAttackWindowOpen || playerHp == null)
+        if (!isAttackWindowOpen || currentAttackDelay > 0f || playerHp == null)
         {
             return;
         }
         isAttackWindowOpen = false;
+        GlobalEvent.PlayerHit.Invoke();
         playerHp.DecreaseHP(damage);
         cooldownTimer = attackCooldown;
         Debug.Log("Hit Player");
+        if (GlobalEvent.Instance != null) GlobalEvent.Instance.TriggerHitStop(0.1f);
         GlobalEvent.HealthChange.Invoke(playerHp.CurrentHP, playerHp.MaxHP);
         GlobalEvent.IncreaseMadness.Invoke(GlobalData.MADNESS_HIT);
     }

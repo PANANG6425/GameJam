@@ -73,6 +73,11 @@ public class Enemy : MonoBehaviour
                 Hit(burnDamagePerTick);
             }
         }
+
+        if (movement != null)
+        {
+            movement.pauseMovement = (knockbackTimer > 0f || IsStunned);
+        }
     }
 
     void FixedUpdate()

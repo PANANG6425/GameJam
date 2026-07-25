@@ -21,6 +21,23 @@ public class WeaponManager : MonoBehaviour
         shovel = GetComponentInChildren<Shovel>();
     }
 
+    private void OnEnable()
+    {
+        GlobalEvent.PlayerHit.AddListener(OnPlayerHit);
+    }
+
+    private void OnDisable()
+    {
+        GlobalEvent.PlayerHit.RemoveListener(OnPlayerHit);
+    }
+
+    // The player took a hit - interrupt whatever weapon action is in progress.
+    private void OnPlayerHit()
+    {
+        revolver?.Interrupt();
+        shovel?.CancelAttack();
+    }
+
     // Left-click ("Attack") - aim on press, fire on release.
     public void OnFire(InputAction.CallbackContext context)
     {

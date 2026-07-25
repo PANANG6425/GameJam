@@ -88,6 +88,23 @@ public class Shovel : MonoBehaviour
         isAttacking = false;
     }
 
+    // Called when the player is hit - cancel any in-progress swing.
+    public void CancelAttack()
+    {
+        if (!isAttacking)
+        {
+            return;
+        }
+
+        CancelInvoke(nameof(EnableHitbox));
+        CancelInvoke(nameof(EndAttack));
+        if (attackCollider != null)
+        {
+            attackCollider.enabled = false;
+        }
+        isAttacking = false;
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         // Only register hits during an active attack and on the correct layers
@@ -104,6 +121,7 @@ public class Shovel : MonoBehaviour
 
         enemy.Hit(damage);
         enemy.ApplyStun(stunDuration);
+        if (GlobalEvent.Instance != null) GlobalEvent.Instance.TriggerHitStop(0.1f);
 
         // Push the enemy away from the player (this component sits on the player root).
         Vector2 dir = other.transform.position - transform.position;

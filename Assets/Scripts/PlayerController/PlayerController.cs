@@ -52,6 +52,7 @@ public class PlayerController : MonoBehaviour
         Falling,
         Landing,
         Crouching,
+        Hit,
     }
 
     private LocoState locoState = LocoState.Grounded;
@@ -70,6 +71,7 @@ public class PlayerController : MonoBehaviour
     private float originalOffset;
     private Animator animator;
     private Revolver revolver;
+    private HitPoint hp;
 
 
     private void Awake()
@@ -80,6 +82,33 @@ public class PlayerController : MonoBehaviour
         originalOffset = capsuleCollider.offset.y;
         animator = GetComponentInChildren<Animator>();
         revolver = GetComponentInChildren<Revolver>();
+        hp = GetComponent<HitPoint>();
+
+        if (hp != null)
+        {
+            hp.onDamageTaken.AddListener(OnPlayerHit);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (hp != null)
+        {
+            hp.onDamageTaken.RemoveListener(OnPlayerHit);
+        }
+    }
+
+    private bool hitReactRequested = false;
+
+    private void OnPlayerHit()
+    {
+        if (animator == null)
+        {
+            return;
+        }
+
+        locoState = LocoState.Hit;
+        hitReactRequested = true;
     }
 
 
@@ -120,6 +149,29 @@ public class PlayerController : MonoBehaviour
     // once the landing animation is done.
     private void UpdateAirborneAnimation(bool combatBusy)
     {
+        // The hit reaction overrides everything (even combat) until its clip
+        // finishes, then hands control back to the locomotion machine.
+        if (locoState == LocoState.Hit)
+        {
+            if (hitReactRequested)
+            {
+                animator.Play("Anim_Hit", -1, 0f);
+                hitReactRequested = false;
+                return;
+            }
+
+            var info = animator.GetCurrentAnimatorStateInfo(0);
+            if (info.IsName("Anim_Hit"))
+            {
+                if (info.normalizedTime >= 1f) SetLocoState(LocoState.Grounded);
+            }
+            else if (!animator.GetNextAnimatorStateInfo(0).IsName("Anim_Hit"))
+            {
+                SetLocoState(LocoState.Grounded);
+            }
+            return;
+        }
+
         // While a combat animation owns the body (aim/fire/reload), let it play and
         // just keep the air state synced so it resumes correctly afterwards.
         if (combatBusy)
@@ -186,6 +238,9 @@ public class PlayerController : MonoBehaviour
                 break;
             case LocoState.Crouching:
                 animator.Play("Anim_Crouch");
+                break;
+            case LocoState.Hit:
+                animator.Play("Anim_Hit", -1, 0f);
                 break;
             case LocoState.Grounded:
                 // Rejoin the Idle/Walk/Sprint machine; its bool transitions take over

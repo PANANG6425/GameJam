@@ -1,10 +1,13 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class HitPoint : MonoBehaviour
 {
     [SerializeField]
     int max_hp = 10;
     int currentHP;
+
+    public UnityEvent onDamageTaken;
 
     public int MaxHP { get { return max_hp; } }
     public int CurrentHP { get { return currentHP; } }
@@ -32,8 +35,10 @@ public class HitPoint : MonoBehaviour
 
     public void DecreaseHP(int amount)
     {
+        if (amount <= 0) return;
         currentHP -= amount;
         currentHP = (currentHP < 0) ? 0 : currentHP;
         Debug.Log("CurrentHP:" + currentHP);
+        onDamageTaken?.Invoke();
     }
 }
