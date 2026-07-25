@@ -45,6 +45,16 @@ public class AccuracyCone : MonoBehaviour
         }
     }
 
+    // Force the accuracy cone off (e.g. when the revolver is holstered).
+    public void Hide()
+    {
+        mouseHold = false;
+        if (lineRenderer != null)
+        {
+            lineRenderer.positionCount = 0;
+        }
+    }
+
     public void SetBaseAngle(float angle)
     {
         baseAngle = angle;

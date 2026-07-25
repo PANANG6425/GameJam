@@ -41,15 +41,39 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rb;
     private float horizontalInput;
-    private bool isGrounded;
+    private bool isGrounded = true;
     private bool isRunning;
     private bool isCrouching;
+
+    private enum LocoState
+    {
+        Grounded,
+        Jumping,
+        Falling,
+        Landing,
+        Crouching,
+        Hit,
+    }
+
+    private LocoState locoState = LocoState.Grounded;
+    public bool IsIdle => isGrounded && Mathf.Abs(horizontalInput) <= 0.01f && !isCrouching;
+
+    // Aiming / firing / reloading own the body's animation.
+    private bool CombatBusy =>
+        revolver != null && (revolver.IsAiming || revolver.IsQuickFiring || revolver.IsReloading);
+
+    // The player is rooted in place while crouching or busy with the revolver.
+    private bool MovementLocked => isCrouching || CombatBusy;
     private float coyoteTimeCounter;
     private float jumpBufferCounter;
     private CapsuleCollider2D capsuleCollider;
     private float originalHeight;
     private float originalOffset;
     private Animator animator;
+    private Revolver revolver;
+    private HitPoint hp;
+
+    private HitPoint playerHp;
 
     private void Awake()
     {
@@ -58,12 +82,44 @@ public class PlayerController : MonoBehaviour
         originalHeight = capsuleCollider.size.y;
         originalOffset = capsuleCollider.offset.y;
         animator = GetComponentInChildren<Animator>();
+        revolver = GetComponentInChildren<Revolver>();
+        hp = GetComponent<HitPoint>();
+
+        if (hp != null)
+        {
+            hp.onDamageTaken.AddListener(OnPlayerHit);
+        }
     }
+
+    private void OnDestroy()
+    {
+        if (hp != null)
+        {
+            hp.onDamageTaken.RemoveListener(OnPlayerHit);
+        }
+    }
+
+    private bool hitReactRequested = false;
+
+    private void OnPlayerHit()
+    {
+        if (animator == null)
+        {
+            return;
+        }
+
+        locoState = LocoState.Hit;
+        hitReactRequested = true;
+    }
+
 
     private void Update()
     {
+        bool cantMove = MovementLocked;
+        float currentHorizontalInput = cantMove ? 0f : horizontalInput;
+
         // Flip the player to face the direction they are walking
-        if (horizontalInput > 0.01f)
+        if (currentHorizontalInput > 0.01f)
         {
             transform.localScale = new Vector3(
                 Mathf.Abs(transform.localScale.x),
@@ -71,7 +127,7 @@ public class PlayerController : MonoBehaviour
                 transform.localScale.z
             );
         }
-        else if (horizontalInput < -0.01f)
+        else if (currentHorizontalInput < -0.01f)
         {
             transform.localScale = new Vector3(
                 -Mathf.Abs(transform.localScale.x),
@@ -83,17 +139,128 @@ public class PlayerController : MonoBehaviour
         // Update walk animation
         if (animator != null)
         {
-            animator.SetBool("IsWalking", Mathf.Abs(horizontalInput) > 0.01f);
+            animator.SetBool("IsWalking", Mathf.Abs(currentHorizontalInput) > 0.01f);
+            UpdateAirborneAnimation(CombatBusy);
+        }
+    }
+
+    // Drives the jump / fall / land states. They sit on top of the Idle/Walk/Sprint
+    // bool machine: while airborne we Play() the air states directly (they have no
+    // transitions, so they hold), then hand control back to the locomotion machine
+    // once the landing animation is done.
+    private void UpdateAirborneAnimation(bool combatBusy)
+    {
+        // The hit reaction overrides everything (even combat) until its clip
+        // finishes, then hands control back to the locomotion machine.
+        if (locoState == LocoState.Hit)
+        {
+            if (hitReactRequested)
+            {
+                animator.Play("Anim_Hit", -1, 0f);
+                hitReactRequested = false;
+                return;
+            }
+
+            var info = animator.GetCurrentAnimatorStateInfo(0);
+            if (info.IsName("Anim_Hit"))
+            {
+                if (info.normalizedTime >= 1f) SetLocoState(LocoState.Grounded);
+            }
+            else if (!animator.GetNextAnimatorStateInfo(0).IsName("Anim_Hit"))
+            {
+                SetLocoState(LocoState.Grounded);
+            }
+            return;
+        }
+
+        // While a combat animation owns the body (aim/fire/reload), let it play and
+        // just keep the air state synced so it resumes correctly afterwards.
+        if (combatBusy)
+        {
+            locoState = LocoState.Grounded;
+            return;
+        }
+
+        if (!isGrounded)
+        {
+            SetLocoState(rb.linearVelocity.y > 0.01f ? LocoState.Jumping : LocoState.Falling);
+            return;
+        }
+
+        // Crouching (grounded) holds the crouch pose over normal locomotion.
+        if (isCrouching)
+        {
+            SetLocoState(LocoState.Crouching);
+            return;
+        }
+
+        // Grounded: play the landing anim once, then rejoin the locomotion machine.
+        if (locoState == LocoState.Jumping || locoState == LocoState.Falling)
+        {
+            SetLocoState(LocoState.Landing);
+        }
+        else if (locoState == LocoState.Landing)
+        {
+            // Let the (non-looping) landing clip play through, but bail early if the
+            // player is already moving so control stays responsive.
+            var info = animator.GetCurrentAnimatorStateInfo(0);
+            bool landingFinished = info.IsName("Anim_Landing") && info.normalizedTime >= 1f;
+            bool moving = Mathf.Abs(horizontalInput) > 0.01f;
+            if (landingFinished || moving)
+            {
+                SetLocoState(LocoState.Grounded);
+            }
+        }
+        else if (locoState == LocoState.Crouching)
+        {
+            // Just stood up - rejoin the Idle/Walk/Sprint machine.
+            SetLocoState(LocoState.Grounded);
+        }
+    }
+
+    private void SetLocoState(LocoState next)
+    {
+        if (locoState == next)
+        {
+            return;
+        }
+        locoState = next;
+
+        switch (next)
+        {
+            case LocoState.Jumping:
+                animator.Play("Anim_Jumping");
+                break;
+            case LocoState.Falling:
+                animator.Play("Anim_Falling");
+                break;
+            case LocoState.Landing:
+                animator.Play("Anim_Landing");
+                break;
+            case LocoState.Crouching:
+                animator.Play("Anim_Crouch");
+                break;
+            case LocoState.Hit:
+                animator.Play("Anim_Hit", -1, 0f);
+                break;
+            case LocoState.Grounded:
+                // Rejoin the Idle/Walk/Sprint machine; its bool transitions take over
+                // from Idle immediately if the player is moving.
+                animator.Play("Anim_Idle");
+                break;
         }
     }
 
     private void FixedUpdate()
     {
+        bool cantMove = MovementLocked;
+        float currentHorizontalInput = cantMove ? 0f : horizontalInput;
+
         // Calculate target speed (cannot run while crouching)
-        float targetSpeed = horizontalInput * ((isRunning && !isCrouching) ? runSpeed : walkSpeed);
+        float targetSpeed = currentHorizontalInput * ((isRunning && !isCrouching) ? runSpeed : walkSpeed);
 
         // Choose acceleration or deceleration based on whether we are providing input
-        float accelRate = (Mathf.Abs(horizontalInput) > 0.01f) ? acceleration : deceleration;
+        float accelRate = (Mathf.Abs(currentHorizontalInput) > 0.01f) ? acceleration : deceleration;
 
         // Move the current velocity towards the target speed
         float newVelocityX = Mathf.MoveTowards(
@@ -119,8 +286,9 @@ public class PlayerController : MonoBehaviour
 
         jumpBufferCounter -= Time.fixedDeltaTime;
 
-        // Perform jump if both jump buffer and coyote time are valid
-        if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f)
+        // Perform jump if both jump buffer and coyote time are valid (and not
+        // locked while aiming / quick-firing / reloading)
+        if (!cantMove && jumpBufferCounter > 0f && coyoteTimeCounter > 0f)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
 
@@ -128,6 +296,21 @@ public class PlayerController : MonoBehaviour
             jumpBufferCounter = 0f;
             coyoteTimeCounter = 0f;
         }
+    }
+
+    // Flip the sprite to face a world-space X position. Used by the revolver so
+    // shots (and quick-fire bursts) turn the player toward the target.
+    public void FaceTowards(float worldX)
+    {
+        float dx = worldX - transform.position.x;
+        if (Mathf.Abs(dx) < 0.01f)
+        {
+            return;
+        }
+
+        float sign = dx >= 0f ? 1f : -1f;
+        Vector3 s = transform.localScale;
+        transform.localScale = new Vector3(sign * Mathf.Abs(s.x), s.y, s.z);
     }
 
     // Hooked to "Move" action via Player Input Component

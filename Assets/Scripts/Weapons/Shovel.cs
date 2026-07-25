@@ -1,6 +1,6 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
+// Melee attack (V). A single strike that damages, stuns and knocks the enemy back.
 public class Shovel : MonoBehaviour
 {
     [SerializeField]
@@ -12,7 +12,36 @@ public class Shovel : MonoBehaviour
     [SerializeField]
     int damage = 2;
 
+    [Tooltip("How long the hit box stays active for a swing.")]
+    [SerializeField]
+    float attackWindow = 0.15f;
+
+    [Tooltip("Delay before the hit box becomes active after swinging.")]
+    [SerializeField]
+    float attackDelay = 0.18f;
+
+    [Header("On Hit")]
+    [SerializeField]
+    float stunDuration = 1f;
+
+    [Tooltip("Horizontal push applied to the enemy, away from the player.")]
+    [SerializeField]
+    float knockbackForce = 8f;
+
+    [Tooltip("Small upward pop added to the knockback.")]
+    [SerializeField]
+    float knockbackUp = 2f;
+
     private bool isAttacking = false;
+    private Animator animator;
+
+    private void Awake()
+    {
+        // Try to find the Animator
+        animator = GetComponent<Animator>();
+        if (animator == null) animator = GetComponentInChildren<Animator>();
+        if (animator == null) animator = GetComponentInParent<Animator>();
+    }
 
     private void Start()
     {
@@ -23,26 +52,34 @@ public class Shovel : MonoBehaviour
         }
     }
 
-    public void OnRightClick(InputAction.CallbackContext context)
+    // Triggered by the V melee input.
+    public void Melee()
     {
-        if (context.performed)
+        if (isAttacking || attackCollider == null)
         {
-            MeleeAttack();
+            return;
         }
+
+        isAttacking = true;
+
+        if (animator != null)
+        {
+            animator.Play("Anim_Melee");
+        }
+
+        CancelInvoke(nameof(EnableHitbox));
+        Invoke(nameof(EnableHitbox), attackDelay);
     }
 
-    private void MeleeAttack()
+    private void EnableHitbox()
     {
-        if (!isAttacking && attackCollider != null)
-        {
-            isAttacking = true;
-            attackCollider.enabled = true;
+        if (!isAttacking) return;
+        
+        attackCollider.enabled = true;
 
-            // Disable the collider after a short window
-            Invoke(nameof(EndAttack), 0.15f);
-
-            Debug.Log("Shovel swung!");
-        }
+        // Disable the collider after a short window
+        CancelInvoke(nameof(EndAttack));
+        Invoke(nameof(EndAttack), attackWindow);
     }
 
     private void EndAttack()
@@ -51,14 +88,56 @@ public class Shovel : MonoBehaviour
         isAttacking = false;
     }
 
+    // Called when the player is hit - cancel any in-progress swing.
+    public void CancelAttack()
+    {
+        if (!isAttacking)
+        {
+            return;
+        }
+
+        CancelInvoke(nameof(EnableHitbox));
+        CancelInvoke(nameof(EndAttack));
+        if (attackCollider != null)
+        {
+            attackCollider.enabled = false;
+        }
+        isAttacking = false;
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         // Only register hits during an active attack and on the correct layers
-        if (isAttacking && ((1 << other.gameObject.layer) & enemyLayers) != 0)
+        if (!isAttacking || ((1 << other.gameObject.layer) & enemyLayers) == 0)
         {
-            var enemy = other.gameObject.GetComponent<Enemy>();
-            enemy.Hit(damage);
-            Debug.Log("Shovel hit: " + other.name);
+            return;
         }
+
+        var enemy = other.gameObject.GetComponent<Enemy>();
+        if (enemy == null)
+        {
+            return;
+        }
+
+        enemy.Hit(damage);
+        enemy.ApplyStun(stunDuration);
+        if (GlobalEvent.Instance != null) GlobalEvent.Instance.TriggerHitStop(0.1f);
+
+        GlobalEvent.IncreaseMadness.Invoke(GlobalData.MADNESS_ATK);
+
+        // Push the enemy away from the player (this component sits on the player root).
+        Vector2 dir = other.transform.position - transform.position;
+        dir.y = 0f;
+        if (dir.sqrMagnitude < 0.0001f)
+        {
+            dir = transform.localScale.x >= 0f ? Vector2.right : Vector2.left;
+        }
+        else
+        {
+            dir.Normalize();
+        }
+
+        Vector2 knockback = dir * knockbackForce + Vector2.up * knockbackUp;
+        enemy.ApplyKnockback(knockback);
     }
 }
