@@ -90,6 +90,7 @@ public class PlayerController : MonoBehaviour
         {
             hp.onDamageTaken.AddListener(OnPlayerHit);
         }
+        GlobalEvent.HealthChange.Invoke(hp.CurrentHP, hp.MaxHP);
     }
 
     void Start()
@@ -99,7 +100,9 @@ public class PlayerController : MonoBehaviour
 
     void HealPlayer(int amount)
     {
+        Debug.Log("Heal player: " + amount);
         hp.IncreaseHP(amount);
+        GlobalEvent.HealthChange.Invoke(hp.CurrentHP, hp.MaxHP);
     }
 
     private void OnDestroy()
@@ -107,6 +110,7 @@ public class PlayerController : MonoBehaviour
         if (hp != null)
         {
             hp.onDamageTaken.RemoveListener(OnPlayerHit);
+            GlobalEvent.IncreaseHealth.RemoveListener(HealPlayer);
         }
     }
 
@@ -127,6 +131,7 @@ public class PlayerController : MonoBehaviour
 
         locoState = LocoState.Hit;
         hitReactRequested = true;
+        GlobalEvent.HealthChange.Invoke(hp.CurrentHP, hp.MaxHP);
     }
 
     private void Update()

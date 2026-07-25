@@ -25,6 +25,12 @@ public class GlobalEvent : MonoBehaviour
         Instance = this;
 
         DontDestroyOnLoad(gameObject);
+        HealthChange.AddListener(OnHealthChange);
+    }
+
+    void OnDestroy()
+    {
+        HealthChange.RemoveListener(OnHealthChange);
     }
 
     private bool isHitStopping = false;
@@ -53,6 +59,7 @@ public class GlobalEvent : MonoBehaviour
 
     public void Heal()
     {
+        Debug.Log("Heal");
         IncreaseHealth.Invoke((int)(curPlayerMaxHP * 0.3));
     }
 

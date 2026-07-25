@@ -9,8 +9,14 @@ public class HitPoint : MonoBehaviour
 
     public UnityEvent onDamageTaken;
 
-    public int MaxHP { get { return max_hp; } }
-    public int CurrentHP { get { return currentHP; } }
+    public int MaxHP
+    {
+        get { return max_hp; }
+    }
+    public int CurrentHP
+    {
+        get { return currentHP; }
+    }
 
     void Start()
     {
@@ -35,7 +41,8 @@ public class HitPoint : MonoBehaviour
 
     public void DecreaseHP(int amount)
     {
-        if (amount <= 0) return;
+        if (amount <= 0)
+            return;
         currentHP -= amount;
         currentHP = (currentHP < 0) ? 0 : currentHP;
         Debug.Log("CurrentHP:" + currentHP);
