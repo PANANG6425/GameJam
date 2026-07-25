@@ -4332,7 +4332,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: FrontLeg_1/FrontCalf_1
+    path: BackLeg_1/BackCalf_1/BackShoe_1
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -4344,7 +4344,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: FrontLeg_1/FrontCalf_1
+    path: BackLeg_1/BackCalf_1/BackShoe_1
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -4356,7 +4356,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: FrontLeg_1/FrontCalf_1
+    path: BackLeg_1/BackCalf_1/BackShoe_1
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -4440,7 +4440,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: FrontLeg_1/FrontCalf_1/FrontShoe_1
+    path: FrontLeg_1
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -4452,7 +4452,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: FrontLeg_1/FrontCalf_1/FrontShoe_1
+    path: FrontLeg_1
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -4464,7 +4464,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: FrontLeg_1/FrontCalf_1/FrontShoe_1
+    path: FrontLeg_1
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -4476,7 +4476,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: BackLeg_1/BackCalf_1/BackShoe_1
+    path: FrontLeg_1/FrontCalf_1
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -4488,7 +4488,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: BackLeg_1/BackCalf_1/BackShoe_1
+    path: FrontLeg_1/FrontCalf_1
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -4500,7 +4500,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: BackLeg_1/BackCalf_1/BackShoe_1
+    path: FrontLeg_1/FrontCalf_1
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -4656,7 +4656,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: FrontLeg_1
+    path: FrontLeg_1/FrontCalf_1/FrontShoe_1
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -4668,7 +4668,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: FrontLeg_1
+    path: FrontLeg_1/FrontCalf_1/FrontShoe_1
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -4680,7 +4680,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: FrontLeg_1
+    path: FrontLeg_1/FrontCalf_1/FrontShoe_1
     classID: 4
     script: {fileID: 0}
     flags: 0

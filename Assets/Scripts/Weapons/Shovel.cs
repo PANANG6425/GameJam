@@ -33,6 +33,8 @@ public class Shovel : MonoBehaviour
     float knockbackUp = 2f;
 
     private bool isAttacking = false;
+    public bool IsAttacking => isAttacking;
+
     private Animator animator;
 
     private void Awake()

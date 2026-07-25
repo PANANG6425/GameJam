@@ -40,11 +40,15 @@ public class WeaponManager : MonoBehaviour
         GlobalEvent.PlayerHit.RemoveListener(OnPlayerHit);
     }
 
+    private void LateUpdate()
+    {
+        pointerOverUI = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+    }
+
     // The player took a hit - interrupt whatever weapon action is in progress.
     private void OnPlayerHit()
     {
         revolver?.Interrupt();
-        shovel?.CancelAttack();
     }
 
     // Left-click ("Attack") - aim on press, fire on release.

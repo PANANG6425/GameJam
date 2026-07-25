@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(HitPoint))]
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
@@ -58,6 +59,10 @@ public class PlayerController : MonoBehaviour
     private LocoState locoState = LocoState.Grounded;
     public bool IsIdle => isGrounded && Mathf.Abs(horizontalInput) <= 0.01f && !isCrouching;
 
+    [Header("Status Effects")]
+    private float slowTimer = 0f;
+    private float slowMultiplier = 1f;
+
     // Aiming / firing / reloading own the body's animation.
     private bool CombatBusy =>
         revolver != null && (revolver.IsAiming || revolver.IsQuickFiring || revolver.IsReloading);
@@ -71,9 +76,8 @@ public class PlayerController : MonoBehaviour
     private float originalOffset;
     private Animator animator;
     private Revolver revolver;
+    private Shovel shovel;
     private HitPoint hp;
-
-    private HitPoint playerHp;
 
     private void Awake()
     {
@@ -83,12 +87,26 @@ public class PlayerController : MonoBehaviour
         originalOffset = capsuleCollider.offset.y;
         animator = GetComponentInChildren<Animator>();
         revolver = GetComponentInChildren<Revolver>();
+        shovel = GetComponentInChildren<Shovel>();
         hp = GetComponent<HitPoint>();
 
         if (hp != null)
         {
             hp.onDamageTaken.AddListener(OnPlayerHit);
         }
+        GlobalEvent.HealthChange.Invoke(hp.CurrentHP, hp.MaxHP);
+    }
+
+    void Start()
+    {
+        GlobalEvent.IncreaseHealth.AddListener(HealPlayer);
+    }
+
+    void HealPlayer(int amount)
+    {
+        Debug.Log("Heal player: " + amount);
+        hp.IncreaseHP(amount);
+        GlobalEvent.HealthChange.Invoke(hp.CurrentHP, hp.MaxHP);
     }
 
     private void OnDestroy()
@@ -96,6 +114,7 @@ public class PlayerController : MonoBehaviour
         if (hp != null)
         {
             hp.onDamageTaken.RemoveListener(OnPlayerHit);
+            GlobalEvent.IncreaseHealth.RemoveListener(HealPlayer);
         }
     }
 
@@ -108,10 +127,26 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
+        if (shovel != null && shovel.IsAttacking)
+        {
+            // Hyper armor during melee: ignore the flinch/hit reaction
+            return;
+        }
+
         locoState = LocoState.Hit;
         hitReactRequested = true;
+        GlobalEvent.HealthChange.Invoke(hp.CurrentHP, hp.MaxHP);
     }
 
+    public void ApplySlow(float multiplier, float duration)
+    {
+        // Apply the slow. If already slowed, refresh the duration and keep the strongest slow.
+        if (slowTimer <= 0f || multiplier <= slowMultiplier)
+        {
+            slowMultiplier = multiplier;
+            slowTimer = duration;
+        }
+    }
 
     private void Update()
     {
@@ -164,7 +199,8 @@ public class PlayerController : MonoBehaviour
             var info = animator.GetCurrentAnimatorStateInfo(0);
             if (info.IsName("Anim_Hit"))
             {
-                if (info.normalizedTime >= 1f) SetLocoState(LocoState.Grounded);
+                if (info.normalizedTime >= 1f)
+                    SetLocoState(LocoState.Grounded);
             }
             else if (!animator.GetNextAnimatorStateInfo(0).IsName("Anim_Hit"))
             {
@@ -256,8 +292,17 @@ public class PlayerController : MonoBehaviour
         bool cantMove = MovementLocked;
         float currentHorizontalInput = cantMove ? 0f : horizontalInput;
 
+        // Update status effects
+        if (slowTimer > 0f)
+        {
+            slowTimer -= Time.fixedDeltaTime;
+        }
+
         // Calculate target speed (cannot run while crouching)
-        float targetSpeed = currentHorizontalInput * ((isRunning && !isCrouching) ? runSpeed : walkSpeed);
+        float baseSpeed = (isRunning && !isCrouching) ? runSpeed : walkSpeed;
+        float currentMaxSpeed = (slowTimer > 0f) ? (baseSpeed * slowMultiplier) : baseSpeed;
+
+        float targetSpeed = currentHorizontalInput * currentMaxSpeed;
 
         // Choose acceleration or deceleration based on whether we are providing input
         float accelRate = (Mathf.Abs(currentHorizontalInput) > 0.01f) ? acceleration : deceleration;
