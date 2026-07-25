@@ -172,29 +172,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2877863762154598447, guid: 583f6dea14c444e4eb84ac07b5cffa39, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -1.492874
-      objectReference: {fileID: 0}
-    - target: {fileID: 3697908620710832953, guid: 583f6dea14c444e4eb84ac07b5cffa39, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.019381914
-      objectReference: {fileID: 0}
-    - target: {fileID: 3697908620710832953, guid: 583f6dea14c444e4eb84ac07b5cffa39, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0.9998122
-      objectReference: {fileID: 0}
     - target: {fileID: 4574165161649697101, guid: 583f6dea14c444e4eb84ac07b5cffa39, type: 3}
       propertyPath: m_Name
       value: Enemy
       objectReference: {fileID: 0}
-    - target: {fileID: 5358626383550187102, guid: 583f6dea14c444e4eb84ac07b5cffa39, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.2590139
-      objectReference: {fileID: 0}
-    - target: {fileID: 5358626383550187102, guid: 583f6dea14c444e4eb84ac07b5cffa39, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0.9658736
+    - target: {fileID: 5788717394860688335, guid: 583f6dea14c444e4eb84ac07b5cffa39, type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 0.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

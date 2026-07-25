@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -9,10 +10,15 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     Area2D areaDetection;
 
-    [SerializeField]
     HitPoint hp;
 
     Rigidbody2D rb;
+    Animator animator;
+
+    [SerializeField]
+    ParticleSystem deathParticles;
+
+    bool isDead = false;
 
     Vector3 playerPos = new();
 
@@ -41,6 +47,11 @@ public class Enemy : MonoBehaviour
         movement = GetComponent<EnemyMovement>();
         hp = GetComponent<HitPoint>();
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponentInChildren<Animator>();
+        if (deathParticles == null)
+        {
+            deathParticles = GetComponentInChildren<ParticleSystem>(true);
+        }
         areaDetection.onEnter.AddListener(OnPlayerEnter);
         areaDetection.onStay.AddListener(OnPlayerStay);
         areaDetection.onExit.AddListener(OnPlayerExit);
@@ -48,6 +59,8 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
+        if (isDead) return;
+
         float dt = Time.deltaTime;
 
         // Shock stun countdown
@@ -139,11 +152,93 @@ public class Enemy : MonoBehaviour
 
     public void Hit(int damage)
     {
+        if (isDead) return;
+
         hp?.DecreaseHP(damage);
         if (hp?.GetCurrentHP() <= 0)
         {
-            Destroy(gameObject);
+            Die();
         }
+        else
+        {
+            animator?.SetTrigger("AnimEnemyHit");
+        }
+    }
+
+    private void Die()
+    {
+        isDead = true;
+        
+        // Disable physics and movement immediately
+        if (movement != null) movement.enabled = false;
+        
+        var col = GetComponent<Collider2D>();
+        if (col != null) col.enabled = false;
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.simulated = false; // Stop physics interactions
+        }
+
+        // Clear any pending hit trigger (e.g. queued up by a quick-fire burst) so
+        // it can't bounce the animator out of the death state and stall the death.
+        animator?.ResetTrigger("AnimEnemyHit");
+        animator?.SetTrigger("AnimEnemyDie");
+
+        StartCoroutine(DeathSequence());
+    }
+
+    private IEnumerator DeathSequence()
+    {
+        if (animator != null)
+        {
+            // Wait for the death animation to finish, but never hang: bail after a
+            // safety timeout in case the death state is never cleanly reached.
+            float elapsed = 0f;
+            const float timeout = 3f;
+            while (elapsed < timeout)
+            {
+                var state = animator.GetCurrentAnimatorStateInfo(0);
+                if (state.IsName("AnimEnemyDie") && state.normalizedTime >= 1f)
+                {
+                    break;
+                }
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+        }
+        else
+        {
+            // Fallback if there is no animator
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        // 2. Hide every sprite part of the enemy rig (it's a multi-sprite skeleton,
+        // so disabling a single renderer wouldn't hide all of it).
+        foreach (var sr in GetComponentsInChildren<SpriteRenderer>())
+        {
+            sr.enabled = false;
+        }
+
+        // 3. Play the death particles. Detach them first so they survive the enemy
+        // being destroyed and can finish on their own, then self-destruct.
+        if (deathParticles != null)
+        {
+            
+            Vector3 worldPos = deathParticles.transform.position;
+            deathParticles.transform.SetParent(null, false);
+            deathParticles.transform.position = worldPos;
+            
+            deathParticles.Play();
+
+            var main = deathParticles.main;
+            float lifetime = main.duration + main.startLifetime.constantMax;
+            Destroy(deathParticles.gameObject, lifetime);
+        }
+
+        // 4. Remove the enemy.
+        Destroy(gameObject);
     }
 
     // Shock bullet - freeze the enemy in place for a short duration.

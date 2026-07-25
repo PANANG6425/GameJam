@@ -49,7 +49,6 @@ public class WeaponManager : MonoBehaviour
     private void OnPlayerHit()
     {
         revolver?.Interrupt();
-        shovel?.CancelAttack();
     }
 
     // Left-click ("Attack") - aim on press, fire on release.

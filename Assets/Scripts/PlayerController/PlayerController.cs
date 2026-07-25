@@ -72,6 +72,7 @@ public class PlayerController : MonoBehaviour
     private float originalOffset;
     private Animator animator;
     private Revolver revolver;
+    private Shovel shovel;
     private HitPoint hp;
 
     private void Awake()
@@ -82,6 +83,7 @@ public class PlayerController : MonoBehaviour
         originalOffset = capsuleCollider.offset.y;
         animator = GetComponentInChildren<Animator>();
         revolver = GetComponentInChildren<Revolver>();
+        shovel = GetComponentInChildren<Shovel>();
         hp = GetComponent<HitPoint>();
 
         if (hp != null)
@@ -114,6 +116,12 @@ public class PlayerController : MonoBehaviour
     {
         if (animator == null)
         {
+            return;
+        }
+
+        if (shovel != null && shovel.IsAttacking)
+        {
+            // Hyper armor during melee: ignore the flinch/hit reaction
             return;
         }
 
