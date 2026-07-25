@@ -12,6 +12,8 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     HitPoint hp;
 
+    Rigidbody2D rb;
+
     Vector3 playerPos = new();
 
     // Status effects
@@ -38,6 +40,7 @@ public class Enemy : MonoBehaviour
         }
         movement = GetComponent<EnemyMovement>();
         hp = GetComponent<HitPoint>();
+        rb = GetComponent<Rigidbody2D>();
         areaDetection.onEnter.AddListener(OnPlayerEnter);
         areaDetection.onStay.AddListener(OnPlayerStay);
         areaDetection.onExit.AddListener(OnPlayerExit);
