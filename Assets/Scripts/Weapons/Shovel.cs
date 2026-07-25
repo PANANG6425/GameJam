@@ -13,6 +13,15 @@ public class Shovel : MonoBehaviour
     int damage = 2;
 
     private bool isAttacking = false;
+    private Animator animator;
+
+    private void Awake()
+    {
+        // Try to find the Animator
+        animator = GetComponent<Animator>();
+        if (animator == null) animator = GetComponentInChildren<Animator>();
+        if (animator == null) animator = GetComponentInParent<Animator>();
+    }
 
     private void Start()
     {
@@ -37,6 +46,11 @@ public class Shovel : MonoBehaviour
         {
             isAttacking = true;
             attackCollider.enabled = true;
+
+            if (animator != null)
+            {
+                animator.Play("Anim_Melee");
+            }
 
             // Disable the collider after a short window
             Invoke(nameof(EndAttack), 0.15f);

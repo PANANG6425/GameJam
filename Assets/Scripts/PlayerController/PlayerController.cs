@@ -50,6 +50,7 @@ public class PlayerController : MonoBehaviour
     private float originalHeight;
     private float originalOffset;
     private Animator animator;
+    private Revolver revolver;
 
     private void Awake()
     {
@@ -58,12 +59,16 @@ public class PlayerController : MonoBehaviour
         originalHeight = capsuleCollider.size.y;
         originalOffset = capsuleCollider.offset.y;
         animator = GetComponentInChildren<Animator>();
+        revolver = GetComponentInChildren<Revolver>();
     }
 
     private void Update()
     {
+        bool cantMove = revolver != null && revolver.IsAiming;
+        float currentHorizontalInput = cantMove ? 0f : horizontalInput;
+
         // Flip the player to face the direction they are walking
-        if (horizontalInput > 0.01f)
+        if (currentHorizontalInput > 0.01f)
         {
             transform.localScale = new Vector3(
                 Mathf.Abs(transform.localScale.x),
@@ -71,7 +76,7 @@ public class PlayerController : MonoBehaviour
                 transform.localScale.z
             );
         }
-        else if (horizontalInput < -0.01f)
+        else if (currentHorizontalInput < -0.01f)
         {
             transform.localScale = new Vector3(
                 -Mathf.Abs(transform.localScale.x),
@@ -83,17 +88,20 @@ public class PlayerController : MonoBehaviour
         // Update walk animation
         if (animator != null)
         {
-            animator.SetBool("IsWalking", Mathf.Abs(horizontalInput) > 0.01f);
+            animator.SetBool("IsWalking", Mathf.Abs(currentHorizontalInput) > 0.01f);
         }
     }
 
     private void FixedUpdate()
     {
+        bool cantMove = revolver != null && revolver.IsAiming;
+        float currentHorizontalInput = cantMove ? 0f : horizontalInput;
+
         // Calculate target speed (cannot run while crouching)
-        float targetSpeed = horizontalInput * ((isRunning && !isCrouching) ? runSpeed : walkSpeed);
+        float targetSpeed = currentHorizontalInput * ((isRunning && !isCrouching) ? runSpeed : walkSpeed);
 
         // Choose acceleration or deceleration based on whether we are providing input
-        float accelRate = (Mathf.Abs(horizontalInput) > 0.01f) ? acceleration : deceleration;
+        float accelRate = (Mathf.Abs(currentHorizontalInput) > 0.01f) ? acceleration : deceleration;
 
         // Move the current velocity towards the target speed
         float newVelocityX = Mathf.MoveTowards(

@@ -21,6 +21,8 @@ public class Revolver : MonoBehaviour
     [SerializeField]
     float AimSpeed = 0.1f;
 
+    public bool IsAiming { get; private set; }
+
     private AccuracyCone accuracyCone;
     private Animator animator;
 
@@ -58,15 +60,23 @@ public class Revolver : MonoBehaviour
 
         if (context.started)
         {
+            // Aiming: the animator's Any State -> Anim_Revolver transition (driven
+            // by the IsAiming bool) forces the aim pose, overriding walk/run so the
+            // player visibly stops and raises the revolver.
+            IsAiming = true;
             if (animator != null)
             {
-                animator.Play("Anim_Revolver");
+                animator.SetBool("IsAiming", true);
             }
         }
         else if (context.canceled)
         {
+            // Clear IsAiming first so the Any State transition releases, then play
+            // the fired animation.
+            IsAiming = false;
             if (animator != null)
             {
+                animator.SetBool("IsAiming", false);
                 animator.Play("Anim_Fired");
             }
             Shoot();
