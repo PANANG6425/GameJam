@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-// Six-shot revolver. Driven by the WeaponManager while in Revolver mode:
+// Six-shot revolver (the main weapon), driven by the WeaponManager:
 //   Left-click  -> aim on press, fire on release
-//   Right-click -> "scroll" the cylinder to the next bullet type
+//   Right-click -> quick-fire burst (fan the hammer)
+//   Q           -> "scroll" the cylinder to the next bullet type
 //
 // Ammo model:
 //   * The cylinder holds `cylinderCapacity` (6) rounds. Firing spends one round;
@@ -63,6 +64,7 @@ public class Revolver : MonoBehaviour
 
     public bool IsAiming { get; private set; }
     public bool IsReloading { get; private set; }
+    public bool IsQuickFiring => isQuickFiring;
     public BulletType SelectedType { get; private set; } = BulletType.Normal;
     public int RoundsLoaded { get; private set; }
     public int CylinderCapacity => cylinderCapacity;
@@ -92,6 +94,7 @@ public class Revolver : MonoBehaviour
 
     private AccuracyCone accuracyCone;
     private Animator animator;
+    private PlayerController playerController;
     private bool isQuickFiring;
 
     private void Awake()
@@ -107,6 +110,8 @@ public class Revolver : MonoBehaviour
         animator = GetComponent<Animator>();
         if (animator == null) animator = GetComponentInChildren<Animator>();
         if (animator == null) animator = GetComponentInParent<Animator>();
+
+        playerController = GetComponentInParent<PlayerController>();
 
         // Index the bullet definitions by type for quick lookup.
         if (bulletDefinitions != null)
@@ -276,20 +281,48 @@ public class Revolver : MonoBehaviour
     private IEnumerator AutoReload()
     {
         IsReloading = true;
+        if (animator != null)
+        {
+            animator.Play("Anim_Reload");
+        }
         yield return new WaitForSeconds(reloadTime);
         RoundsLoaded = cylinderCapacity;
         IsReloading = false;
         OnAmmoChanged?.Invoke();
     }
 
-    // Double-click "fan the hammer" - rapidly empty the remaining loaded rounds.
+    // Right-click "fan the hammer" - rapidly empty the remaining loaded rounds.
     public void QuickFire()
     {
         if (isQuickFiring || IsReloading || RoundsLoaded <= 0)
         {
             return;
         }
+
+        if (playerController != null && !playerController.IsIdle)
+        {
+            return;
+        }
+
         StartCoroutine(QuickFireRoutine());
+    }
+
+    // Point the shot at the mouse and flip the player to face it. Quick-fire
+    // doesn't go through the hold-to-aim flow that normally keeps the cone's
+    // base angle pointed at the cursor, so we refresh it here per shot.
+    private void AimAndFaceMouse()
+    {
+        if (Camera.main == null || Mouse.current == null)
+        {
+            return;
+        }
+
+        Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        Vector3 apex = transform.position;
+        float angle = Mathf.Atan2(mouseWorld.y - apex.y, mouseWorld.x - apex.x);
+
+        accuracyCone?.SetBaseAngle(angle);
+        playerController?.FaceTowards(mouseWorld.x);
     }
 
     private IEnumerator QuickFireRoutine()
@@ -309,6 +342,10 @@ public class Revolver : MonoBehaviour
         while (RoundsLoaded > 0 && !IsReloading)
         {
             int before = RoundsLoaded;
+
+            // Re-aim at the mouse (and turn to face it) each shot so the burst
+            // tracks the cursor instead of using a stale/default angle.
+            AimAndFaceMouse();
             Shoot();
 
             // Shoot() leaves the count unchanged on a dry click (empty special

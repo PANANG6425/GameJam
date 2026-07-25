@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;
     private bool isRunning;
     private bool isCrouching;
+    public bool IsIdle => isGrounded && Mathf.Abs(horizontalInput) <= 0.01f && !isCrouching;
     private float coyoteTimeCounter;
     private float jumpBufferCounter;
     private CapsuleCollider2D capsuleCollider;
@@ -64,7 +65,9 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        bool cantMove = revolver != null && revolver.IsAiming;
+        bool cantMove =
+            revolver != null
+            && (revolver.IsAiming || revolver.IsQuickFiring || revolver.IsReloading);
         float currentHorizontalInput = cantMove ? 0f : horizontalInput;
 
         // Flip the player to face the direction they are walking
@@ -94,7 +97,9 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        bool cantMove = revolver != null && revolver.IsAiming;
+        bool cantMove =
+            revolver != null
+            && (revolver.IsAiming || revolver.IsQuickFiring || revolver.IsReloading);
         float currentHorizontalInput = cantMove ? 0f : horizontalInput;
 
         // Calculate target speed (cannot run while crouching)
@@ -127,8 +132,9 @@ public class PlayerController : MonoBehaviour
 
         jumpBufferCounter -= Time.fixedDeltaTime;
 
-        // Perform jump if both jump buffer and coyote time are valid
-        if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f)
+        // Perform jump if both jump buffer and coyote time are valid (and not
+        // locked while aiming / quick-firing / reloading)
+        if (!cantMove && jumpBufferCounter > 0f && coyoteTimeCounter > 0f)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
 
@@ -136,6 +142,21 @@ public class PlayerController : MonoBehaviour
             jumpBufferCounter = 0f;
             coyoteTimeCounter = 0f;
         }
+    }
+
+    // Flip the sprite to face a world-space X position. Used by the revolver so
+    // shots (and quick-fire bursts) turn the player toward the target.
+    public void FaceTowards(float worldX)
+    {
+        float dx = worldX - transform.position.x;
+        if (Mathf.Abs(dx) < 0.01f)
+        {
+            return;
+        }
+
+        float sign = dx >= 0f ? 1f : -1f;
+        Vector3 s = transform.localScale;
+        transform.localScale = new Vector3(sign * Mathf.Abs(s.x), s.y, s.z);
     }
 
     // Hooked to "Move" action via Player Input Component
