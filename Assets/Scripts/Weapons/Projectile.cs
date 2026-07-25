@@ -37,6 +37,7 @@ public class Projectile : MonoBehaviour
         if (!markDestroy)
         {
             ApplyEffect(directHit);
+            GlobalEvent.IncreaseMadness.Invoke(GlobalData.MADNESS_ATK);
         }
 
         markDestroy = true;

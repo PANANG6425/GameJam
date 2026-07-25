@@ -6,7 +6,7 @@ public class Madness : MonoBehaviour
     int maxMadness = 100;
     int currentMadness = 0;
 
-    public void Start()
+    void Start()
     {
         GlobalEvent.IncreaseMadness.AddListener(Increase);
         GlobalEvent.MadnessChange.Invoke(currentMadness, maxMadness);
@@ -19,7 +19,7 @@ public class Madness : MonoBehaviour
 
     public void Increase(int amount)
     {
-        currentMadness += (currentMadness < maxMadness) ? amount : maxMadness;
+        currentMadness += (currentMadness < maxMadness) ? amount : 0;
         GlobalEvent.MadnessChange.Invoke(currentMadness, maxMadness);
     }
 

@@ -135,6 +135,7 @@ public class Revolver : MonoBehaviour
         }
 
         RoundsLoaded = cylinderCapacity;
+        GlobalEvent.AmmoChange.Invoke(RoundsLoaded, cylinderCapacity);
     }
 
     void Start()
@@ -147,6 +148,7 @@ public class Revolver : MonoBehaviour
         accuracyCone.SetBaseAngle(BaseAimAngle);
         accuracyCone.SetAimSpeed(AimSpeed);
         accuracyCone.SetMinAimAngle(MinAimAngle);
+        GlobalEvent.AmmoChange.Invoke(RoundsLoaded, cylinderCapacity);
     }
 
     // Left-click - forwarded by the WeaponManager only while in Revolver mode.
@@ -276,6 +278,7 @@ public class Revolver : MonoBehaviour
         {
             StartCoroutine(AutoReload());
         }
+        GlobalEvent.AmmoChange.Invoke(RoundsLoaded, cylinderCapacity);
     }
 
     private IEnumerator AutoReload()
@@ -289,6 +292,7 @@ public class Revolver : MonoBehaviour
         RoundsLoaded = cylinderCapacity;
         IsReloading = false;
         OnAmmoChanged?.Invoke();
+        GlobalEvent.AmmoChange.Invoke(RoundsLoaded, cylinderCapacity);
     }
 
     // Right-click "fan the hammer" - rapidly empty the remaining loaded rounds.

@@ -9,6 +9,8 @@ public class GlobalEvent : MonoBehaviour
     public static readonly Event<int, int> HealthChange = new();
     public static readonly Event<int, int> MadnessChange = new();
 
+    public static readonly Event<int, int> AmmoChange = new();
+
     void Awake()
     {
         if (Instance != null && Instance != this)
