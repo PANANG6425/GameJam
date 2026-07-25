@@ -6,6 +6,9 @@ public class HitPoint : MonoBehaviour
     int max_hp = 10;
     int currentHP;
 
+    public int MaxHP { get { return max_hp; } }
+    public int CurrentHP { get { return currentHP; } }
+
     void Start()
     {
         currentHP = max_hp;

@@ -71,6 +71,7 @@ public class PlayerController : MonoBehaviour
     private Animator animator;
     private Revolver revolver;
 
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -80,6 +81,7 @@ public class PlayerController : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         revolver = GetComponentInChildren<Revolver>();
     }
+
 
     private void Update()
     {

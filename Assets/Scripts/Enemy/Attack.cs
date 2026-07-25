@@ -88,6 +88,7 @@ public class Attack : MonoBehaviour
         playerHp.DecreaseHP(damage);
         cooldownTimer = attackCooldown;
         Debug.Log("Hit Player");
+        GlobalEvent.HealthChange.Invoke(playerHp.CurrentHP, playerHp.MaxHP);
         GlobalEvent.IncreaseMadness.Invoke(GlobalData.MADNESS_HIT);
     }
 

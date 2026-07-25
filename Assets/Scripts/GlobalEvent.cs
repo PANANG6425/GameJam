@@ -6,6 +6,8 @@ public class GlobalEvent : MonoBehaviour
     public static GlobalEvent Instance { get; private set; }
 
     public static readonly Event<int> IncreaseMadness = new();
+    public static readonly Event<int, int> HealthChange = new();
+    public static readonly Event<int, int> MadnessChange = new();
 
     void Awake()
     {

@@ -9,6 +9,7 @@ public class Madness : MonoBehaviour
     public void Start()
     {
         GlobalEvent.IncreaseMadness.AddListener(Increase);
+        GlobalEvent.MadnessChange.Invoke(currentMadness, maxMadness);
     }
 
     public void OnDestroy()
@@ -19,11 +20,12 @@ public class Madness : MonoBehaviour
     public void Increase(int amount)
     {
         currentMadness += (currentMadness < maxMadness) ? amount : maxMadness;
-        Debug.Log(currentMadness);
+        GlobalEvent.MadnessChange.Invoke(currentMadness, maxMadness);
     }
 
     public void Reset()
     {
         currentMadness = 0;
+        GlobalEvent.MadnessChange.Invoke(currentMadness, maxMadness);
     }
 }
