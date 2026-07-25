@@ -16,6 +16,10 @@ public class Shovel : MonoBehaviour
     [SerializeField]
     float attackWindow = 0.15f;
 
+    [Tooltip("Delay before the hit box becomes active after swinging.")]
+    [SerializeField]
+    float attackDelay = 0.18f;
+
     [Header("On Hit")]
     [SerializeField]
     float stunDuration = 1f;
@@ -57,12 +61,21 @@ public class Shovel : MonoBehaviour
         }
 
         isAttacking = true;
-        attackCollider.enabled = true;
 
         if (animator != null)
         {
             animator.Play("Anim_Melee");
         }
+
+        CancelInvoke(nameof(EnableHitbox));
+        Invoke(nameof(EnableHitbox), attackDelay);
+    }
+
+    private void EnableHitbox()
+    {
+        if (!isAttacking) return;
+        
+        attackCollider.enabled = true;
 
         // Disable the collider after a short window
         CancelInvoke(nameof(EndAttack));

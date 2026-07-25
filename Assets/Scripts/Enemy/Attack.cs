@@ -12,6 +12,12 @@ public class Attack : MonoBehaviour
     public int damage = 1;
     public float attackCooldown = 0.5f;
 
+    [Header("Animation")]
+    [SerializeField]
+    private Animator animator;
+    [SerializeField]
+    private string attackAnimationName = "AnimEnemyAttack";
+
     EnemyMovement movement;
     Collider2D hitAreaCollider;
     HitPoint playerHp;
@@ -23,6 +29,11 @@ public class Attack : MonoBehaviour
     void Start()
     {
         movement = GetComponent<EnemyMovement>();
+        if (animator == null)
+        {
+            animator = GetComponentInChildren<Animator>();
+            if (animator == null) animator = GetComponent<Animator>();
+        }
 
         if (areaDetection == null)
         {
@@ -62,7 +73,14 @@ public class Attack : MonoBehaviour
 
         if (movement.NearTarget)
         {
-            isAttackWindowOpen = true;
+            if (!isAttackWindowOpen)
+            {
+                isAttackWindowOpen = true;
+                if (animator != null && !string.IsNullOrEmpty(attackAnimationName))
+                {
+                    animator.Play(attackAnimationName);
+                }
+            }
         }
 
         // A sleeping Rigidbody2D stops Unity from sending OnTriggerStay2D,
