@@ -304,8 +304,8 @@ GameObject:
   - component: {fileID: 198613557}
   - component: {fileID: 198613556}
   m_Layer: 3
-  m_Name: Tilemap_Tool
-  m_TagString: Untagged
+  m_Name: Tilemap_ladder
+  m_TagString: Ladder
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -355,7 +355,7 @@ TilemapCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -20438,6 +20438,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -103.01
       objectReference: {fileID: 0}
+    - target: {fileID: 1502037141669706750, guid: c1f4dea64e0a8be49b1c6bec4373d196, type: 3}
+      propertyPath: m_SortingLayer
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1502037141669706750, guid: c1f4dea64e0a8be49b1c6bec4373d196, type: 3}
+      propertyPath: m_SortingOrder
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1502037141669706750, guid: c1f4dea64e0a8be49b1c6bec4373d196, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1320490037
+      objectReference: {fileID: 0}
     - target: {fileID: 1753099123590416807, guid: c1f4dea64e0a8be49b1c6bec4373d196, type: 3}
       propertyPath: m_LocalRotation.w
       value: 0.99999714
@@ -20577,6 +20589,14 @@ PrefabInstance:
     - target: {fileID: 7838776435829768681, guid: c1f4dea64e0a8be49b1c6bec4373d196, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.1267815
+      objectReference: {fileID: 0}
+    - target: {fileID: 8455444473569083756, guid: c1f4dea64e0a8be49b1c6bec4373d196, type: 3}
+      propertyPath: m_SortingLayer
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8455444473569083756, guid: c1f4dea64e0a8be49b1c6bec4373d196, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1320490037
       objectReference: {fileID: 0}
     - target: {fileID: 8951308611543381242, guid: c1f4dea64e0a8be49b1c6bec4373d196, type: 3}
       propertyPath: m_LocalScale.x
@@ -23561,7 +23581,17 @@ Tilemap:
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
       m_AllTileFlags: 1073741825
-  - first: {x: 153, y: 151, z: 0}
+  - first: {x: 150, y: 151, z: 0}
+    second:
+      serializedVersion: 2
+      m_TileIndex: 11
+      m_TileSpriteIndex: 0
+      m_TileMatrixIndex: 0
+      m_TileColorIndex: 0
+      m_TileObjectToInstantiateIndex: 65535
+      dummyAlignment: 0
+      m_AllTileFlags: 1073741825
+  - first: {x: 151, y: 151, z: 0}
     second:
       serializedVersion: 2
       m_TileIndex: 11
@@ -24737,7 +24767,7 @@ Tilemap:
     m_RefCount: 0
     m_Data: {fileID: 11400000, guid: c9d090915a2f7114099531074b79cf0e, type: 2}
   - serializedVersion: 2
-    m_RefCount: 254
+    m_RefCount: 255
     m_Data: {fileID: 11400000, guid: 2fd67ab37de60c74c9264021ab9bd1b2, type: 2}
   - serializedVersion: 2
     m_RefCount: 0
@@ -24771,7 +24801,7 @@ Tilemap:
     m_Data: {fileID: 11400000, guid: e0648bc96144bf843972b49d1d0f5a7e, type: 2}
   m_TileSpriteArray:
   - serializedVersion: 2
-    m_RefCount: 254
+    m_RefCount: 255
     m_Data: {fileID: 622685636, guid: b2f983045c0fd4143ac06cd58f767018, type: 3}
   - serializedVersion: 2
     m_RefCount: 117
@@ -24805,7 +24835,7 @@ Tilemap:
     m_Data: {fileID: 833037485, guid: b2f983045c0fd4143ac06cd58f767018, type: 3}
   m_TileMatrixArray:
   - serializedVersion: 2
-    m_RefCount: 371
+    m_RefCount: 372
     m_Data:
       e00: 1
       e01: 0
@@ -24825,7 +24855,7 @@ Tilemap:
       e33: 1
   m_TileColorArray:
   - serializedVersion: 2
-    m_RefCount: 371
+    m_RefCount: 372
     m_Data: {r: 1, g: 1, b: 1, a: 1}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
