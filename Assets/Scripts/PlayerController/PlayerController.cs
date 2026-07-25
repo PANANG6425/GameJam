@@ -41,10 +41,28 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rb;
     private float horizontalInput;
-    private bool isGrounded;
+    private bool isGrounded = true;
     private bool isRunning;
     private bool isCrouching;
+
+    private enum LocoState
+    {
+        Grounded,
+        Jumping,
+        Falling,
+        Landing,
+        Crouching,
+    }
+
+    private LocoState locoState = LocoState.Grounded;
     public bool IsIdle => isGrounded && Mathf.Abs(horizontalInput) <= 0.01f && !isCrouching;
+
+    // Aiming / firing / reloading own the body's animation.
+    private bool CombatBusy =>
+        revolver != null && (revolver.IsAiming || revolver.IsQuickFiring || revolver.IsReloading);
+
+    // The player is rooted in place while crouching or busy with the revolver.
+    private bool MovementLocked => isCrouching || CombatBusy;
     private float coyoteTimeCounter;
     private float jumpBufferCounter;
     private CapsuleCollider2D capsuleCollider;
@@ -65,9 +83,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        bool cantMove =
-            revolver != null
-            && (revolver.IsAiming || revolver.IsQuickFiring || revolver.IsReloading);
+        bool cantMove = MovementLocked;
         float currentHorizontalInput = cantMove ? 0f : horizontalInput;
 
         // Flip the player to face the direction they are walking
@@ -92,14 +108,94 @@ public class PlayerController : MonoBehaviour
         if (animator != null)
         {
             animator.SetBool("IsWalking", Mathf.Abs(currentHorizontalInput) > 0.01f);
+            UpdateAirborneAnimation(CombatBusy);
+        }
+    }
+
+    // Drives the jump / fall / land states. They sit on top of the Idle/Walk/Sprint
+    // bool machine: while airborne we Play() the air states directly (they have no
+    // transitions, so they hold), then hand control back to the locomotion machine
+    // once the landing animation is done.
+    private void UpdateAirborneAnimation(bool combatBusy)
+    {
+        // While a combat animation owns the body (aim/fire/reload), let it play and
+        // just keep the air state synced so it resumes correctly afterwards.
+        if (combatBusy)
+        {
+            locoState = LocoState.Grounded;
+            return;
+        }
+
+        if (!isGrounded)
+        {
+            SetLocoState(rb.linearVelocity.y > 0.01f ? LocoState.Jumping : LocoState.Falling);
+            return;
+        }
+
+        // Crouching (grounded) holds the crouch pose over normal locomotion.
+        if (isCrouching)
+        {
+            SetLocoState(LocoState.Crouching);
+            return;
+        }
+
+        // Grounded: play the landing anim once, then rejoin the locomotion machine.
+        if (locoState == LocoState.Jumping || locoState == LocoState.Falling)
+        {
+            SetLocoState(LocoState.Landing);
+        }
+        else if (locoState == LocoState.Landing)
+        {
+            // Let the (non-looping) landing clip play through, but bail early if the
+            // player is already moving so control stays responsive.
+            var info = animator.GetCurrentAnimatorStateInfo(0);
+            bool landingFinished = info.IsName("Anim_Landing") && info.normalizedTime >= 1f;
+            bool moving = Mathf.Abs(horizontalInput) > 0.01f;
+            if (landingFinished || moving)
+            {
+                SetLocoState(LocoState.Grounded);
+            }
+        }
+        else if (locoState == LocoState.Crouching)
+        {
+            // Just stood up - rejoin the Idle/Walk/Sprint machine.
+            SetLocoState(LocoState.Grounded);
+        }
+    }
+
+    private void SetLocoState(LocoState next)
+    {
+        if (locoState == next)
+        {
+            return;
+        }
+        locoState = next;
+
+        switch (next)
+        {
+            case LocoState.Jumping:
+                animator.Play("Anim_Jumping");
+                break;
+            case LocoState.Falling:
+                animator.Play("Anim_Falling");
+                break;
+            case LocoState.Landing:
+                animator.Play("Anim_Landing");
+                break;
+            case LocoState.Crouching:
+                animator.Play("Anim_Crouch");
+                break;
+            case LocoState.Grounded:
+                // Rejoin the Idle/Walk/Sprint machine; its bool transitions take over
+                // from Idle immediately if the player is moving.
+                animator.Play("Anim_Idle");
+                break;
         }
     }
 
     private void FixedUpdate()
     {
-        bool cantMove =
-            revolver != null
-            && (revolver.IsAiming || revolver.IsQuickFiring || revolver.IsReloading);
+        bool cantMove = MovementLocked;
         float currentHorizontalInput = cantMove ? 0f : horizontalInput;
 
         // Calculate target speed (cannot run while crouching)
