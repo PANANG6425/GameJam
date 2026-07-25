@@ -47,6 +47,7 @@ GameObject:
   - component: {fileID: 8859266303389752897}
   - component: {fileID: 5925777328643146368}
   - component: {fileID: 6279433426397295255}
+  - component: {fileID: 6600123456789012345}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -184,8 +185,8 @@ MonoBehaviour:
     m_ActionName: 'Player/Look[/Mouse/delta,/Pen/delta]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5925777328643146368}
-        m_TargetAssemblyTypeName: Revolver, Assembly-CSharp
+      - m_Target: {fileID: 6600123456789012345}
+        m_TargetAssemblyTypeName: WeaponManager, Assembly-CSharp
         m_MethodName: OnFire
         m_Mode: 0
         m_Arguments:
@@ -193,7 +194,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument:
           m_BoolArgument: 0
         m_CallState: 2
     m_ActionId: 6c2ab1b8-8984-453a-af3d-a3c78ae1679a
@@ -300,20 +301,52 @@ MonoBehaviour:
     m_ActionName: UI/TrackedDeviceOrientation
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8859266303389752897}
-        m_TargetAssemblyTypeName: Shovel, Assembly-CSharp
-        m_MethodName: OnRightClick
+      - m_Target: {fileID: 6600123456789012345}
+        m_TargetAssemblyTypeName: WeaponManager, Assembly-CSharp
+        m_MethodName: OnMelee
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument:
           m_BoolArgument: 0
         m_CallState: 2
     m_ActionId: 94b46373-0f6d-4c87-9ac6-fe6bb356df16
-    m_ActionName: 'Player/MeleeAttack[/Mouse/rightButton]'
+    m_ActionName: 'Player/MeleeAttack[/Keyboard/v]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6600123456789012345}
+        m_TargetAssemblyTypeName: WeaponManager, Assembly-CSharp
+        m_MethodName: OnSwitchAmmo
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument:
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: b2c3d4e5-f6a7-4890-9123-456789abcdef
+    m_ActionName: 'Player/SwitchAmmo[/Keyboard/q]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6600123456789012345}
+        m_TargetAssemblyTypeName: WeaponManager, Assembly-CSharp
+        m_MethodName: OnQuickBurst
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument:
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: d4e5f6a7-b8c9-4012-9345-6789abcdef01
+    m_ActionName: 'Player/QuickFire[/Mouse/rightButton]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player
@@ -379,6 +412,73 @@ MonoBehaviour:
   BaseAimAngle: 45
   MinAimAngle: 10
   AimSpeed: 0.1
+  cylinderCapacity: 6
+  reloadTime: 1
+  specialAmmoCapCylinders: 10
+  enemyLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  bulletDefinitions:
+  - type: 0
+    impactDamage: 1
+    burnDamagePerTick: 1
+    burnTickInterval: 0.5
+    burnDuration: 3
+    explosionRadius: 2.5
+    explosionDamage: 3
+    explosionPrefab: {fileID: 0}
+    stunDuration: 1.5
+    gasCloudPrefab: {fileID: 0}
+  - type: 1
+    impactDamage: 1
+    burnDamagePerTick: 1
+    burnTickInterval: 0.5
+    burnDuration: 3
+    explosionRadius: 2.5
+    explosionDamage: 3
+    explosionPrefab: {fileID: 0}
+    stunDuration: 1.5
+    gasCloudPrefab: {fileID: 0}
+  - type: 2
+    impactDamage: 2
+    burnDamagePerTick: 1
+    burnTickInterval: 0.5
+    burnDuration: 3
+    explosionRadius: 2.5
+    explosionDamage: 4
+    explosionPrefab: {fileID: 0}
+    stunDuration: 1.5
+    gasCloudPrefab: {fileID: 0}
+  - type: 3
+    impactDamage: 2
+    burnDamagePerTick: 1
+    burnTickInterval: 0.5
+    burnDuration: 3
+    explosionRadius: 2.5
+    explosionDamage: 3
+    explosionPrefab: {fileID: 0}
+    stunDuration: 1.5
+    gasCloudPrefab: {fileID: 0}
+  - type: 4
+    impactDamage: 1
+    burnDamagePerTick: 1
+    burnTickInterval: 0.5
+    burnDuration: 3
+    explosionRadius: 2.5
+    explosionDamage: 3
+    explosionPrefab: {fileID: 0}
+    stunDuration: 1.5
+    gasCloudPrefab: {fileID: 0}
+  - type: 5
+    impactDamage: 1
+    burnDamagePerTick: 1
+    burnTickInterval: 0.5
+    burnDuration: 3
+    explosionRadius: 2.5
+    explosionDamage: 3
+    explosionPrefab: {fileID: 0}
+    stunDuration: 1.5
+    gasCloudPrefab: {fileID: 0}
 --- !u!114 &6279433426397295255
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -389,9 +489,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 292bacfa99f60204784d2e5f3bebaf65, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::AccuracyCone
   AimSpeed: 0.5
+--- !u!114 &6600123456789012345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2131039786939806048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e1d3c7b9a2f4068135a7c9e1b3d5f70, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponManager
 --- !u!1 &3091061368068868251
 GameObject:
   m_ObjectHideFlags: 0
