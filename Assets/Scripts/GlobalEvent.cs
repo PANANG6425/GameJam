@@ -11,6 +11,7 @@ public class GlobalEvent : MonoBehaviour
     public static readonly Event<int, int> MadnessChange = new();
 
     public static readonly Event<int, int> AmmoChange = new();
+    public static readonly Event<BulletType> AmmoTypeChange = new();
     public static readonly Event PlayerHit = new();
     public int curPlayerMaxHP;
 

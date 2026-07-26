@@ -164,10 +164,10 @@ GameObject:
   - component: {fileID: 423770326277043412}
   - component: {fileID: 629431109235486792}
   - component: {fileID: 1590990285765219209}
-  - component: {fileID: 8316607478068181676}
   - component: {fileID: 5276964904136683103}
   - component: {fileID: 8941803009690362606}
   - component: {fileID: 3200387172775484240}
+  - component: {fileID: 6178907471562688935}
   m_Layer: 8
   m_Name: Enemy
   m_TagString: Enemy
@@ -238,28 +238,6 @@ MonoBehaviour:
   onDamageTaken:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &8316607478068181676
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4574165161649697101}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2df7b3eed2227e04b9aef78ad8eed003, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
-  speed: 5
-  stopDistance: 3
-  groundCheck: {fileID: 4423793655479802753}
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  groundCheckSize: {x: 0.5, y: 0.1}
-  pauseMovement: 0
-  moveAnimParam: IsWalking
-  animator: {fileID: 0}
 --- !u!114 &5276964904136683103
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -331,8 +309,38 @@ MonoBehaviour:
   areaDetection: {fileID: 6136571083762738925}
   deathParticles: {fileID: 5788717394860688335}
   hitSound: {fileID: 8300000, guid: b95c604a2560bb7438a2c7e07514a729, type: 3}
-  hitParticlePrefab: {fileID: 0}
+  hitParticlePrefab: {fileID: 1157551543763616993, guid: b00b81e140b23544195e6e67ce9a4d1c, type: 3}
+  hitParticleCooldown: 0.1
   knockbackDuration: 0.2
+--- !u!114 &6178907471562688935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4574165161649697101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8596ffaeb396f8498fe282af4925c6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyPatrolMovement
+  speed: 5
+  stopDistance: 1.5
+  groundCheck: {fileID: 4423793655479802753}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  groundCheckSize: {x: 0.5, y: 0.1}
+  pauseMovement: 0
+  moveAnimParam: IsWalking
+  animator: {fileID: 6297795852688925553}
+  waitTimeMin: 1.5
+  waitTimeMax: 3
+  moveTimeMin: 0.5
+  moveTimeMax: 1.5
+  ledgeCheck: {fileID: 5100336029547003562}
+  stopAtLedge: 1
+  ledgeCheckRadius: 0.1
 --- !u!1 &7830385183244459593
 GameObject:
   m_ObjectHideFlags: 0
@@ -442,15 +450,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1029626029181103954, guid: b98ef1c427e08d5459aeafad45a13849, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0005264987
+      value: 0.00050597003
       objectReference: {fileID: 0}
     - target: {fileID: 1333536035917592212, guid: b98ef1c427e08d5459aeafad45a13849, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.2590139
+      value: 0.25901356
       objectReference: {fileID: 0}
     - target: {fileID: 1333536035917592212, guid: b98ef1c427e08d5459aeafad45a13849, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.9658736
+      value: -0.9658737
       objectReference: {fileID: 0}
     - target: {fileID: 3797824383477336718, guid: b98ef1c427e08d5459aeafad45a13849, type: 3}
       propertyPath: m_LocalPosition.x
@@ -510,27 +518,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5652149494245522533, guid: b98ef1c427e08d5459aeafad45a13849, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.00004253504
+      value: -0.00003744583
       objectReference: {fileID: 0}
     - target: {fileID: 7436864226318020280, guid: b98ef1c427e08d5459aeafad45a13849, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9839851
+      value: 0.98398525
       objectReference: {fileID: 0}
     - target: {fileID: 7436864226318020280, guid: b98ef1c427e08d5459aeafad45a13849, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.17825058
+      value: -0.17824991
       objectReference: {fileID: 0}
     - target: {fileID: 7750024206059150323, guid: b98ef1c427e08d5459aeafad45a13849, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.019381914
+      value: 0.019366479
       objectReference: {fileID: 0}
     - target: {fileID: 7750024206059150323, guid: b98ef1c427e08d5459aeafad45a13849, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.9998122
+      value: 0.9998125
       objectReference: {fileID: 0}
     - target: {fileID: 8450028184852488810, guid: b98ef1c427e08d5459aeafad45a13849, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.00000086426735
+      value: -0.0000012069939
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

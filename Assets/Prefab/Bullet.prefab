@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1572597391854527765}
   - component: {fileID: -5461185882216023552}
   m_Layer: 9
-  m_Name: Stone
+  m_Name: Bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -81,7 +81,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1320490037
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
@@ -180,9 +180,9 @@ MonoBehaviour:
     burnDuration: 3
     explosionRadius: 2.5
     explosionDamage: 3
-    explosionPrefab: {fileID: 0}
+    explosionPrefab: {fileID: 6070414559203410830, guid: 022018374bac7144aa5c7982e625d507, type: 3}
     stunDuration: 1.5
-    gasCloudPrefab: {fileID: 0}
+    gasCloudPrefab: {fileID: 6070414559203410830, guid: 90faf2bf7817aa84cb71971200ceff84, type: 3}
   enemyLayers:
     serializedVersion: 2
     m_Bits: 256
