@@ -64,7 +64,9 @@ public class Shovel : MonoBehaviour
 
         isAttacking = true;
 
-        if (animator != null)
+        var playerController = GetComponentInParent<PlayerController>();
+
+        if (animator != null && !(playerController != null && playerController.IsCrouching))
         {
             animator.Play("Anim_Melee");
         }

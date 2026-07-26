@@ -166,7 +166,7 @@ public class Revolver : MonoBehaviour
             // player visibly stops and raises the revolver.
             aimInterrupted = false;
             IsAiming = true;
-            if (animator != null)
+            if (animator != null && !(playerController != null && playerController.IsCrouching))
             {
                 animator.SetBool("IsAiming", true);
             }
@@ -189,7 +189,7 @@ public class Revolver : MonoBehaviour
                 return;
             }
 
-            if (animator != null)
+            if (animator != null && !(playerController != null && playerController.IsCrouching))
             {
                 animator.Play("Anim_Fired");
             }
@@ -323,7 +323,7 @@ public class Revolver : MonoBehaviour
     private IEnumerator AutoReload()
     {
         IsReloading = true;
-        if (animator != null)
+        if (animator != null && !(playerController != null && playerController.IsCrouching))
         {
             animator.Play("Anim_Reload");
         }
@@ -398,7 +398,7 @@ public class Revolver : MonoBehaviour
                 break;
             }
 
-            if (animator != null)
+            if (animator != null && !(playerController != null && playerController.IsCrouching))
             {
                 animator.Play("Anim_Fired");
             }

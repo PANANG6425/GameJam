@@ -8,6 +8,11 @@ public class EnemyPatrolMovement : EnemyMovement
     [SerializeField] private float moveTimeMin = 0.5f;
     [SerializeField] private float moveTimeMax = 1.5f;
     
+    [Header("Ledge Detection")]
+    [SerializeField] private Transform ledgeCheck;
+    [SerializeField] private bool stopAtLedge = true;
+    [SerializeField] private float ledgeCheckRadius = 0.1f;
+
     private float stateTimer;
     private bool isPatrolling = false;
     private int moveDirection = 1;
@@ -29,25 +34,57 @@ public class EnemyPatrolMovement : EnemyMovement
 
         isGrounded = groundCheck != null && Physics2D.OverlapBox(groundCheck.position, groundCheckSize, 0f, groundLayer);
 
-        stateTimer -= Time.fixedDeltaTime;
-        if (stateTimer <= 0f)
+        bool atLedge = false;
+        if (stopAtLedge && ledgeCheck != null)
         {
-            if (isPatrolling)
-                SetWaitState();
-            else
-                SetPatrolState();
+            // If there's no ground under the ledge check, we are at a ledge
+            atLedge = !Physics2D.OverlapCircle(ledgeCheck.position, ledgeCheckRadius, groundLayer);
         }
 
         bool isWalking = false;
 
-        if (!isPatrolling)
+        if (isChasing)
         {
-            rb.linearVelocityX = 0;
+            // Stop patrol logic, focus on chasing
+            var distance = Vector3.Distance(transform.position, targetPos);
+            nearTarget = distance <= stopDistance;
+
+            if (nearTarget || atLedge)
+            {
+                rb.linearVelocityX = 0;
+            }
+            else if (isGrounded)
+            {
+                MoveToTarget(targetPos);
+                isWalking = true;
+            }
         }
-        else if (isGrounded)
+        else
         {
-            MoveInDirection(moveDirection);
-            isWalking = true;
+            // Patrol logic
+            stateTimer -= Time.fixedDeltaTime;
+            if (stateTimer <= 0f)
+            {
+                if (isPatrolling)
+                    SetWaitState();
+                else
+                    SetPatrolState();
+            }
+            else if (isPatrolling && atLedge)
+            {
+                // Reached a ledge, stop and wait
+                SetWaitState();
+            }
+
+            if (!isPatrolling)
+            {
+                rb.linearVelocityX = 0;
+            }
+            else if (isGrounded)
+            {
+                MoveInDirection(moveDirection);
+                isWalking = true;
+            }
         }
 
         if (animator != null && !string.IsNullOrEmpty(moveAnimParam))
@@ -66,6 +103,7 @@ public class EnemyPatrolMovement : EnemyMovement
     {
         isPatrolling = true;
         stateTimer = Random.Range(moveTimeMin, moveTimeMax);
+        
         // Randomly pick left or right
         moveDirection = Random.value > 0.5f ? 1 : -1;
     }
@@ -78,5 +116,15 @@ public class EnemyPatrolMovement : EnemyMovement
             transform.localScale.y,
             transform.localScale.z
         );
+    }
+
+    protected override void OnDrawGizmosSelected()
+    {
+        base.OnDrawGizmosSelected();
+        if (ledgeCheck != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(ledgeCheck.position, ledgeCheckRadius);
+        }
     }
 }
