@@ -440,9 +440,9 @@ MonoBehaviour:
     burnDuration: 3
     explosionRadius: 2.5
     explosionDamage: 3
-    explosionPrefab: {fileID: 0}
+    explosionPrefab: {fileID: 6070414559203410830, guid: 022018374bac7144aa5c7982e625d507, type: 3}
     stunDuration: 1.5
-    gasCloudPrefab: {fileID: 0}
+    gasCloudPrefab: {fileID: 6070414559203410830, guid: 90faf2bf7817aa84cb71971200ceff84, type: 3}
   - type: 1
     impactDamage: 1
     burnDamagePerTick: 1
@@ -450,9 +450,9 @@ MonoBehaviour:
     burnDuration: 3
     explosionRadius: 2.5
     explosionDamage: 3
-    explosionPrefab: {fileID: 0}
+    explosionPrefab: {fileID: 6070414559203410830, guid: 022018374bac7144aa5c7982e625d507, type: 3}
     stunDuration: 1.5
-    gasCloudPrefab: {fileID: 0}
+    gasCloudPrefab: {fileID: 6070414559203410830, guid: 90faf2bf7817aa84cb71971200ceff84, type: 3}
   - type: 2
     impactDamage: 2
     burnDamagePerTick: 1
@@ -460,9 +460,9 @@ MonoBehaviour:
     burnDuration: 3
     explosionRadius: 2.5
     explosionDamage: 4
-    explosionPrefab: {fileID: 0}
+    explosionPrefab: {fileID: 6070414559203410830, guid: 022018374bac7144aa5c7982e625d507, type: 3}
     stunDuration: 1.5
-    gasCloudPrefab: {fileID: 0}
+    gasCloudPrefab: {fileID: 6070414559203410830, guid: 90faf2bf7817aa84cb71971200ceff84, type: 3}
   - type: 3
     impactDamage: 2
     burnDamagePerTick: 1
@@ -470,9 +470,9 @@ MonoBehaviour:
     burnDuration: 3
     explosionRadius: 2.5
     explosionDamage: 3
-    explosionPrefab: {fileID: 0}
+    explosionPrefab: {fileID: 6070414559203410830, guid: 022018374bac7144aa5c7982e625d507, type: 3}
     stunDuration: 1.5
-    gasCloudPrefab: {fileID: 0}
+    gasCloudPrefab: {fileID: 6070414559203410830, guid: 90faf2bf7817aa84cb71971200ceff84, type: 3}
   - type: 4
     impactDamage: 1
     burnDamagePerTick: 1
@@ -480,9 +480,9 @@ MonoBehaviour:
     burnDuration: 3
     explosionRadius: 2.5
     explosionDamage: 3
-    explosionPrefab: {fileID: 0}
+    explosionPrefab: {fileID: 6070414559203410830, guid: 022018374bac7144aa5c7982e625d507, type: 3}
     stunDuration: 1.5
-    gasCloudPrefab: {fileID: 0}
+    gasCloudPrefab: {fileID: 6070414559203410830, guid: 90faf2bf7817aa84cb71971200ceff84, type: 3}
   - type: 5
     impactDamage: 1
     burnDamagePerTick: 1
@@ -490,9 +490,9 @@ MonoBehaviour:
     burnDuration: 3
     explosionRadius: 2.5
     explosionDamage: 3
-    explosionPrefab: {fileID: 0}
+    explosionPrefab: {fileID: 6070414559203410830, guid: 022018374bac7144aa5c7982e625d507, type: 3}
     stunDuration: 1.5
-    gasCloudPrefab: {fileID: 0}
+    gasCloudPrefab: {fileID: 6070414559203410830, guid: 90faf2bf7817aa84cb71971200ceff84, type: 3}
 --- !u!114 &6279433426397295255
 MonoBehaviour:
   m_ObjectHideFlags: 0
