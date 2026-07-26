@@ -2,7 +2,6 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
-[RequireComponent(typeof(EnemyMovement))]
 public class Enemy : MonoBehaviour
 {
     protected EnemyMovement movement;
@@ -42,6 +41,19 @@ public class Enemy : MonoBehaviour
     protected float burnTickTimer;
     protected float burnRemaining;
 
+    [Header("Status VFX")]
+    [SerializeField]
+    protected GameObject stunEffect;
+
+    [SerializeField]
+    protected GameObject burnEffect;
+
+    [SerializeField]
+    protected Vector3 burnVfxOffset = new Vector3(0f, -1f, 0f);
+
+    [SerializeField]
+    protected Vector3 stunVfxOffset = Vector3.zero;
+
     [Tooltip("How long the enemy rides a knockback (chase disabled) before regaining control.")]
     [SerializeField]
     protected float knockbackDuration = 0.2f;
@@ -52,11 +64,6 @@ public class Enemy : MonoBehaviour
 
     protected virtual void Start()
     {
-        if (areaDetection == null)
-        {
-            Debug.LogError("Missing Area2D");
-            return;
-        }
         movement = GetComponent<EnemyMovement>();
         hp = GetComponent<HitPoint>();
         rb = GetComponent<Rigidbody2D>();
@@ -65,9 +72,30 @@ public class Enemy : MonoBehaviour
         {
             deathParticles = GetComponentInChildren<ParticleSystem>(true);
         }
-        areaDetection.onEnter.AddListener(OnPlayerEnter);
-        areaDetection.onStay.AddListener(OnPlayerStay);
-        areaDetection.onExit.AddListener(OnPlayerExit);
+
+        // Stationary enemies (e.g. TankBoss) may have no detection area — that's fine.
+        if (areaDetection != null)
+        {
+            areaDetection.onEnter.AddListener(OnPlayerEnter);
+            areaDetection.onStay.AddListener(OnPlayerStay);
+            areaDetection.onExit.AddListener(OnPlayerExit);
+        }
+
+        // If the user assigned a prefab from the project window instead of a child object,
+        // instantiate it as a child automatically.
+        if (stunEffect != null && !stunEffect.scene.IsValid())
+        {
+            stunEffect = Instantiate(stunEffect, transform);
+            stunEffect.transform.localPosition = stunVfxOffset;
+            stunEffect.SetActive(false);
+        }
+
+        if (burnEffect != null && !burnEffect.scene.IsValid())
+        {
+            burnEffect = Instantiate(burnEffect, transform);
+            burnEffect.transform.localPosition = burnVfxOffset;
+            burnEffect.SetActive(false);
+        }
     }
 
     protected virtual void Update()
@@ -97,13 +125,36 @@ public class Enemy : MonoBehaviour
             if (burnTickTimer <= 0f)
             {
                 burnTickTimer = burnTickInterval;
-                Hit(burnDamagePerTick);
+                Hit(burnDamagePerTick, false);
             }
         }
 
         if (movement != null)
         {
             movement.pauseMovement = (knockbackTimer > 0f || IsStunned);
+        }
+
+        if (stunEffect != null && stunEffect.activeSelf != IsStunned)
+        {
+            stunEffect.SetActive(IsStunned);
+            if (IsStunned)
+            {
+                var ps = stunEffect.GetComponent<ParticleSystem>();
+                if (ps != null)
+                    ps.Play(true);
+            }
+        }
+
+        bool isBurning = burnRemaining > 0f;
+        if (burnEffect != null && burnEffect.activeSelf != isBurning)
+        {
+            burnEffect.SetActive(isBurning);
+            if (isBurning)
+            {
+                var ps = burnEffect.GetComponent<ParticleSystem>();
+                if (ps != null)
+                    ps.Play(true);
+            }
         }
     }
 
@@ -129,9 +180,12 @@ public class Enemy : MonoBehaviour
 
     protected virtual void OnDestroy()
     {
-        areaDetection.onEnter.RemoveListener(OnPlayerEnter);
-        areaDetection.onStay.RemoveListener(OnPlayerStay);
-        areaDetection.onExit.RemoveListener(OnPlayerExit);
+        if (areaDetection != null)
+        {
+            areaDetection.onEnter.RemoveListener(OnPlayerEnter);
+            areaDetection.onStay.RemoveListener(OnPlayerStay);
+            areaDetection.onExit.RemoveListener(OnPlayerExit);
+        }
     }
 
     protected virtual void OnPlayerEnter(Collider2D collider)
@@ -140,8 +194,11 @@ public class Enemy : MonoBehaviour
         if (obj.tag == "Player")
         {
             playerPos = obj.transform.position;
-            movement.SetChasing(true);
-            movement.SetTarget(playerPos);
+            if (movement != null)
+            {
+                movement.SetChasing(true);
+                movement.SetTarget(playerPos);
+            }
         }
     }
 
@@ -151,7 +208,8 @@ public class Enemy : MonoBehaviour
         if (obj.tag == "Player")
         {
             playerPos = obj.transform.position;
-            movement.SetTarget(playerPos);
+            if (movement != null)
+                movement.SetTarget(playerPos);
         }
     }
 
@@ -160,33 +218,41 @@ public class Enemy : MonoBehaviour
         var obj = collider.gameObject;
         if (obj.tag == "Player")
         {
-            movement.SetChasing(false);
+            if (movement != null)
+                movement.SetChasing(false);
         }
     }
 
-    public virtual void Hit(int damage)
+    public virtual void Hit(int damage, bool playHitEffects = true)
     {
         if (isDead)
             return;
 
-        if (hitSound != null)
+        if (playHitEffects)
         {
-            GameObject tempAudio = new GameObject("TempHitAudio");
-            AudioSource source = tempAudio.AddComponent<AudioSource>();
-            source.clip = hitSound;
-            // Leave spatialBlend at 0 for 2D sound so it doesn't get quiet
-            source.Play();
-            Destroy(tempAudio, hitSound.length + 0.1f);
-        }
-
-        if (hitParticlePrefab != null && Time.time >= lastHitParticleTime + hitParticleCooldown)
-        {
-            lastHitParticleTime = Time.time;
-            GameObject p = Instantiate(hitParticlePrefab, transform.position, Quaternion.identity);
-            ParticleSystem ps = p.GetComponent<ParticleSystem>();
-            if (ps != null)
+            if (hitSound != null)
             {
-                Destroy(p, ps.main.duration + ps.main.startLifetime.constantMax);
+                GameObject tempAudio = new GameObject("TempHitAudio");
+                AudioSource source = tempAudio.AddComponent<AudioSource>();
+                source.clip = hitSound;
+                // Leave spatialBlend at 0 for 2D sound so it doesn't get quiet
+                source.Play();
+                Destroy(tempAudio, hitSound.length + 0.1f);
+            }
+
+            if (hitParticlePrefab != null && Time.time >= lastHitParticleTime + hitParticleCooldown)
+            {
+                lastHitParticleTime = Time.time;
+                GameObject p = Instantiate(
+                    hitParticlePrefab,
+                    transform.position,
+                    Quaternion.identity
+                );
+                ParticleSystem ps = p.GetComponent<ParticleSystem>();
+                if (ps != null)
+                {
+                    Destroy(p, ps.main.duration + ps.main.startLifetime.constantMax);
+                }
             }
         }
 
@@ -218,6 +284,11 @@ public class Enemy : MonoBehaviour
             rb.linearVelocity = Vector2.zero;
             rb.simulated = false; // Stop physics interactions
         }
+
+        if (stunEffect != null)
+            stunEffect.SetActive(false);
+        if (burnEffect != null)
+            burnEffect.SetActive(false);
 
         // Clear any pending hit trigger (e.g. queued up by a quick-fire burst) so
         // it can't bounce the animator out of the death state and stall the death.

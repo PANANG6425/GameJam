@@ -45,6 +45,10 @@ public class Revolver : MonoBehaviour
     [Tooltip("Seconds the auto-reload takes once the cylinder is empty.")]
     [SerializeField]
     float reloadTime = 1f;
+    
+    [Tooltip("How much faster the reload is at 100% Madness (0.5 = 50% faster).")]
+    [SerializeField]
+    float maxMadnessReloadBonus = 0.5f;
 
     [Tooltip("Delay between shots when double-click quick-firing (fanning the hammer).")]
     [SerializeField]
@@ -333,7 +337,11 @@ public class Revolver : MonoBehaviour
         {
             animator.Play("Anim_Reload");
         }
-        yield return new WaitForSeconds(reloadTime);
+        
+        // Calculate dynamic reload time based on current Madness
+        float currentReloadTime = reloadTime / (1f + (Madness.CurrentPercentage * maxMadnessReloadBonus));
+        
+        yield return new WaitForSeconds(currentReloadTime);
         RoundsLoaded = cylinderCapacity;
         IsReloading = false;
         OnAmmoChanged?.Invoke();

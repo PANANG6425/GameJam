@@ -26,12 +26,12 @@ public class EnemyBomber : Enemy
         }
     }
 
-    public override void Hit(int damage)
+    public override void Hit(int damage, bool playHitEffects = true)
     {
         // Don't interrupt the explosion if it's already triggered
         if (isExploding) return;
         
-        base.Hit(damage);
+        base.Hit(damage, playHitEffects);
     }
 
     protected override void Die()
