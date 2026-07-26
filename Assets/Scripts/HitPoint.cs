@@ -5,7 +5,7 @@ public class HitPoint : MonoBehaviour
 {
     [SerializeField]
     int max_hp = 10;
-    int currentHP;
+    int currentHP = 0;
 
     public UnityEvent onDamageTaken;
 
@@ -18,7 +18,7 @@ public class HitPoint : MonoBehaviour
         get { return currentHP; }
     }
 
-    void Start()
+    void Awake()
     {
         currentHP = max_hp;
     }

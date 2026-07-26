@@ -123,7 +123,7 @@ MonoBehaviour:
   healthBar: {fileID: 7756516494232920554}
   madnessBar: {fileID: 5296191131291983915}
   ammoDisplay: {fileID: 4555094497130018074}
-  skillButton: {fileID: 0}
+  skillButton: {fileID: 3966514468009209873}
 --- !u!1 &4212209436028753795
 GameObject:
   m_ObjectHideFlags: 0
@@ -654,9 +654,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 4184364099781694254}
         m_TargetAssemblyTypeName: GlobalEvent, Assembly-CSharp
-        m_MethodName: Heal
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

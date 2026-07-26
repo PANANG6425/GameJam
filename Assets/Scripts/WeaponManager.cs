@@ -42,7 +42,8 @@ public class WeaponManager : MonoBehaviour
 
     private void LateUpdate()
     {
-        pointerOverUI = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+        pointerOverUI =
+            EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
     }
 
     // The player took a hit - interrupt whatever weapon action is in progress.
