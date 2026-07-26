@@ -13,6 +13,9 @@ public class Portal : MonoBehaviour
     private bool playerInRange;
     Transform playerTranform;
 
+    [SerializeField]
+    private bool isActive = false;
+
     void Start()
     {
         banner.SetActive(false);
@@ -22,7 +25,12 @@ public class Portal : MonoBehaviour
     {
         // Only poll for the key while the player is in range. wasPressedThisFrame
         // reads the keyboard device directly, so no InputAction asset is needed.
-        if (playerInRange && Keyboard.current != null && Keyboard.current.wKey.wasPressedThisFrame)
+        if (
+            playerInRange
+            && isActive
+            && Keyboard.current != null
+            && Keyboard.current.wKey.wasPressedThisFrame
+        )
         {
             var pos = connectingDoor.transform.position;
             playerTranform.position = pos;
@@ -31,7 +39,7 @@ public class Portal : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider.gameObject.CompareTag("Player"))
+        if (collider.gameObject.CompareTag("Player") && isActive)
         {
             playerTranform = collider.gameObject.transform;
             playerInRange = true;
@@ -47,5 +55,17 @@ public class Portal : MonoBehaviour
             playerInRange = false;
             banner.SetActive(false);
         }
+    }
+
+    public void Open()
+    {
+        isActive = true;
+        connectingDoor.Open();
+    }
+
+    public void Close()
+    {
+        isActive = false;
+        connectingDoor.Close();
     }
 }

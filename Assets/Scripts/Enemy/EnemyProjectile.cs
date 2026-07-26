@@ -6,10 +6,13 @@ public class EnemyProjectile : MonoBehaviour
     public float speed = 10f;
     public float lifeTime = 5f;
     public int damage = 1;
-    
+
     [Header("Slow Effect")]
     public float slowMultiplier = 0.5f;
     public float slowDuration = 2f;
+
+    [Header("Bomb")]
+    public bool isExplosion = false;
 
     void Start()
     {
@@ -24,6 +27,10 @@ public class EnemyProjectile : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D hitInfo)
     {
+        if (isExplosion)
+        {
+            return;
+        }
         // Ignore collisions with other enemies
         if (hitInfo.CompareTag("Enemy") || hitInfo.isTrigger)
         {
@@ -39,7 +46,8 @@ public class EnemyProjectile : MonoBehaviour
                 playerHp.DecreaseHP(damage);
                 GlobalEvent.HealthChange.Invoke(playerHp.CurrentHP, playerHp.MaxHP);
                 GlobalEvent.PlayerHit.Invoke();
-                if (GlobalEvent.Instance != null) GlobalEvent.Instance.TriggerHitStop(0.1f);
+                if (GlobalEvent.Instance != null)
+                    GlobalEvent.Instance.TriggerHitStop(0.1f);
             }
 
             // Apply Slow

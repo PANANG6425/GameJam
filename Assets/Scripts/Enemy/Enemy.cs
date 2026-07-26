@@ -2,7 +2,6 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
-[RequireComponent(typeof(EnemyMovement))]
 public class Enemy : MonoBehaviour
 {
     protected EnemyMovement movement;
@@ -45,13 +44,13 @@ public class Enemy : MonoBehaviour
     [Header("Status VFX")]
     [SerializeField]
     protected GameObject stunEffect;
-    
+
     [SerializeField]
     protected GameObject burnEffect;
-    
+
     [SerializeField]
     protected Vector3 burnVfxOffset = new Vector3(0f, -1f, 0f);
-    
+
     [SerializeField]
     protected Vector3 stunVfxOffset = Vector3.zero;
 
@@ -65,11 +64,6 @@ public class Enemy : MonoBehaviour
 
     protected virtual void Start()
     {
-        if (areaDetection == null)
-        {
-            Debug.LogError("Missing Area2D");
-            return;
-        }
         movement = GetComponent<EnemyMovement>();
         hp = GetComponent<HitPoint>();
         rb = GetComponent<Rigidbody2D>();
@@ -78,11 +72,16 @@ public class Enemy : MonoBehaviour
         {
             deathParticles = GetComponentInChildren<ParticleSystem>(true);
         }
-        areaDetection.onEnter.AddListener(OnPlayerEnter);
-        areaDetection.onStay.AddListener(OnPlayerStay);
-        areaDetection.onExit.AddListener(OnPlayerExit);
 
-        // If the user assigned a prefab from the project window instead of a child object, 
+        // Stationary enemies (e.g. TankBoss) may have no detection area — that's fine.
+        if (areaDetection != null)
+        {
+            areaDetection.onEnter.AddListener(OnPlayerEnter);
+            areaDetection.onStay.AddListener(OnPlayerStay);
+            areaDetection.onExit.AddListener(OnPlayerExit);
+        }
+
+        // If the user assigned a prefab from the project window instead of a child object,
         // instantiate it as a child automatically.
         if (stunEffect != null && !stunEffect.scene.IsValid())
         {
@@ -141,7 +140,8 @@ public class Enemy : MonoBehaviour
             if (IsStunned)
             {
                 var ps = stunEffect.GetComponent<ParticleSystem>();
-                if (ps != null) ps.Play(true);
+                if (ps != null)
+                    ps.Play(true);
             }
         }
 
@@ -152,7 +152,8 @@ public class Enemy : MonoBehaviour
             if (isBurning)
             {
                 var ps = burnEffect.GetComponent<ParticleSystem>();
-                if (ps != null) ps.Play(true);
+                if (ps != null)
+                    ps.Play(true);
             }
         }
     }
@@ -179,9 +180,12 @@ public class Enemy : MonoBehaviour
 
     protected virtual void OnDestroy()
     {
-        areaDetection.onEnter.RemoveListener(OnPlayerEnter);
-        areaDetection.onStay.RemoveListener(OnPlayerStay);
-        areaDetection.onExit.RemoveListener(OnPlayerExit);
+        if (areaDetection != null)
+        {
+            areaDetection.onEnter.RemoveListener(OnPlayerEnter);
+            areaDetection.onStay.RemoveListener(OnPlayerStay);
+            areaDetection.onExit.RemoveListener(OnPlayerExit);
+        }
     }
 
     protected virtual void OnPlayerEnter(Collider2D collider)
@@ -190,8 +194,11 @@ public class Enemy : MonoBehaviour
         if (obj.tag == "Player")
         {
             playerPos = obj.transform.position;
-            movement.SetChasing(true);
-            movement.SetTarget(playerPos);
+            if (movement != null)
+            {
+                movement.SetChasing(true);
+                movement.SetTarget(playerPos);
+            }
         }
     }
 
@@ -201,7 +208,8 @@ public class Enemy : MonoBehaviour
         if (obj.tag == "Player")
         {
             playerPos = obj.transform.position;
-            movement.SetTarget(playerPos);
+            if (movement != null)
+                movement.SetTarget(playerPos);
         }
     }
 
@@ -210,13 +218,15 @@ public class Enemy : MonoBehaviour
         var obj = collider.gameObject;
         if (obj.tag == "Player")
         {
-            movement.SetChasing(false);
+            if (movement != null)
+                movement.SetChasing(false);
         }
     }
 
     public virtual void Hit(int damage, bool playHitEffects = true)
     {
-        if (isDead) return;
+        if (isDead)
+            return;
 
         if (playHitEffects)
         {
@@ -233,7 +243,11 @@ public class Enemy : MonoBehaviour
             if (hitParticlePrefab != null && Time.time >= lastHitParticleTime + hitParticleCooldown)
             {
                 lastHitParticleTime = Time.time;
-                GameObject p = Instantiate(hitParticlePrefab, transform.position, Quaternion.identity);
+                GameObject p = Instantiate(
+                    hitParticlePrefab,
+                    transform.position,
+                    Quaternion.identity
+                );
                 ParticleSystem ps = p.GetComponent<ParticleSystem>();
                 if (ps != null)
                 {
@@ -271,8 +285,10 @@ public class Enemy : MonoBehaviour
             rb.simulated = false; // Stop physics interactions
         }
 
-        if (stunEffect != null) stunEffect.SetActive(false);
-        if (burnEffect != null) burnEffect.SetActive(false);
+        if (stunEffect != null)
+            stunEffect.SetActive(false);
+        if (burnEffect != null)
+            burnEffect.SetActive(false);
 
         // Clear any pending hit trigger (e.g. queued up by a quick-fire burst) so
         // it can't bounce the animator out of the death state and stall the death.

@@ -17,10 +17,14 @@ public class MiniBoss : MonoBehaviour
 {
     [Header("ไอเทมที่ดรอปตอนตาย")]
     [Tooltip("ลาก prefab ไอเทม เช่น เครื่องราง / กล่องกระสุน / ผ้าพันแผล")]
-    [SerializeField] GameObject[] dropPrefabs;
+    [SerializeField]
+    GameObject[] dropPrefabs;
 
-    [SerializeField] Vector2 dropOffset = new Vector2(0f, 0.5f);
-    [SerializeField] float spread = 0.6f;   // กระจายไอเทมออกจากกันเล็กน้อย
+    [SerializeField]
+    Vector2 dropOffset = new Vector2(0f, 0.5f);
+
+    [SerializeField]
+    float spread = 0.6f; // กระจายไอเทมออกจากกันเล็กน้อย
 
     HitPoint hp;
     bool dropped;
@@ -32,7 +36,8 @@ public class MiniBoss : MonoBehaviour
 
     void Update()
     {
-        if (dropped || hp == null) return;
+        if (dropped || hp == null)
+            return;
 
         if (hp.GetCurrentHP() <= 0)
         {
@@ -43,12 +48,14 @@ public class MiniBoss : MonoBehaviour
 
     void SpawnDrops()
     {
-        if (dropPrefabs == null || dropPrefabs.Length == 0) return;
+        if (dropPrefabs == null || dropPrefabs.Length == 0)
+            return;
 
         Vector3 basePos = transform.position + (Vector3)dropOffset;
         for (int i = 0; i < dropPrefabs.Length; i++)
         {
-            if (dropPrefabs[i] == null) continue;
+            if (dropPrefabs[i] == null)
+                continue;
             float dx = (i - (dropPrefabs.Length - 1) * 0.5f) * spread;
             Vector3 pos = basePos + new Vector3(dx, 0f, 0f);
             Instantiate(dropPrefabs[i], pos, Quaternion.identity);
