@@ -6,6 +6,8 @@ public class Madness : MonoBehaviour
     int maxMadness = 100;
     int currentMadness = 0;
 
+    public static float CurrentPercentage { get; private set; }
+
     void Start()
     {
         GlobalEvent.IncreaseMadness.AddListener(Increase);
@@ -22,12 +24,19 @@ public class Madness : MonoBehaviour
     public void Increase(int amount)
     {
         currentMadness = Mathf.Clamp(currentMadness + amount, 0, maxMadness);
+        CurrentPercentage = (float)currentMadness / maxMadness;
         GlobalEvent.MadnessChange.Invoke(currentMadness, maxMadness);
+
+        if (currentMadness >= maxMadness)
+        {
+            Reset();
+        }
     }
 
     public void Reset()
     {
         currentMadness = 0;
+        CurrentPercentage = 0f;
         GlobalEvent.MadnessChange.Invoke(currentMadness, maxMadness);
     }
 }

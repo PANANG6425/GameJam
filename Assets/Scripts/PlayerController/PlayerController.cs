@@ -71,6 +71,10 @@ public class PlayerController : MonoBehaviour
     [Header("Status Effects")]
     private float slowTimer = 0f;
     private float slowMultiplier = 1f;
+    
+    [Header("Madness Buff")]
+    [SerializeField]
+    private float maxMadnessSpeedBonus = 0.5f;
 
     [Header("Audio")]
     [SerializeField]
@@ -366,6 +370,9 @@ public class PlayerController : MonoBehaviour
         // Calculate target speed (cannot run while crouching)
         float baseSpeed = (isRunning && !isCrouching) ? runSpeed : walkSpeed;
         float currentMaxSpeed = (slowTimer > 0f) ? (baseSpeed * slowMultiplier) : baseSpeed;
+
+        // Apply madness speed bonus
+        currentMaxSpeed *= (1f + (Madness.CurrentPercentage * maxMadnessSpeedBonus));
 
         float targetSpeed = currentHorizontalInput * currentMaxSpeed;
 
