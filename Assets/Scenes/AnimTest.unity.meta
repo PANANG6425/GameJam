@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Scenes/CoreSystem/MainGame.unity.meta
+guid: 353cce80aa2ac274f98dc9529c2727f6
+========
 guid: 62f67692b952bd047ab84be48d3c42c8
+>>>>>>>> main:Assets/Scenes/AnimTest.unity.meta
 DefaultImporter:
   externalObjects: {}
   userData: 
