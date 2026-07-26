@@ -23,8 +23,11 @@ MonoBehaviour:
   m_OverrideGlobalSceneList: 1
   m_Scenes:
   - m_enabled: 1
-    m_path: Assets/Scenes/TileMapTest.unity
-    m_guid: d25324cabc63c0d4791fd4012c99cc8d
+    m_path: Assets/Scenes/CoreSystem/MainMenu.unity
+    m_guid: 79b26999140358742b98af04168ac900
+  - m_enabled: 1
+    m_path: Assets/Scenes/Chapter/Ypres's Eternal.unity
+    m_guid: eab3a4e1089c3c646888c61cea421451
   m_HasScriptingDefines: 1
   m_ScriptingDefines: []
   m_PlayerSettingsYaml:
@@ -750,6 +753,8 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 7097570221116883033
       type: {class: WebGLPlatformSettings, ns: UnityEditor.WebGL, asm: UnityEditor.WebGL.Extensions}
       data:

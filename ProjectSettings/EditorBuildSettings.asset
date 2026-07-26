@@ -6,7 +6,10 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 8c9cfa26abfee488c85f1582747f6a02
+    path: Assets/Scenes/CoreSystem/MainMenu.unity
+    guid: 79b26999140358742b98af04168ac900
+  - enabled: 1
+    path: Assets/Scenes/Chapter/Ypres's Eternal.unity
+    guid: eab3a4e1089c3c646888c61cea421451
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
