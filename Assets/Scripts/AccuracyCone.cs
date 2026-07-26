@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,6 +11,7 @@ public class AccuracyCone : MonoBehaviour
     float minAngle = 0f;
     float baseAngle = 0f;
     public float AimSpeed = 0.1f;
+    public Camera camera;
 
     public float CurrentAngle => currentAngle;
     public float MinAngle => minAngle;
@@ -76,7 +78,7 @@ public class AccuracyCone : MonoBehaviour
         if (mouseHold)
         {
             float radians = currentAngle * Mathf.Deg2Rad;
-            var mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+            var mousePos = camera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
             Vector3 apex = transform.position;
 
             baseAngle = Mathf.Atan2(mousePos.y - apex.y, mousePos.x - apex.x);

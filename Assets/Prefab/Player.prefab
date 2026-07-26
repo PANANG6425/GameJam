@@ -375,6 +375,7 @@ MonoBehaviour:
   jumpCutMultiplier: 0.5
   coyoteTime: 0.2
   jumpBufferTime: 0.2
+  climbSpeed: 4
   groundCheck: {fileID: 1096438001520174044}
   groundLayer:
     serializedVersion: 2
@@ -505,6 +506,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AccuracyCone
   AimSpeed: 0.5
+  camera: {fileID: 0}
 --- !u!114 &6600123456789012345
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -623,9 +625,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1320490037
+  m_SortingLayer: 4
+  m_SortingOrder: 20
   m_MaskInteraction: 0
   m_Sprite: {fileID: 3304030112333170441, guid: 7e455e324d9581b46ab5f004e2ff6802, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -953,9 +955,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1320490037
+  m_SortingLayer: 4
+  m_SortingOrder: 20
   m_MaskInteraction: 0
   m_Sprite: {fileID: 57591053551863209, guid: 030121267d08712499fde99167f8c7d4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1070,11 +1072,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4641207527235630895, guid: 56609ad5fbfed2b46a29dad6f22b1960, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.862456
+      value: 0.8624605
       objectReference: {fileID: 0}
     - target: {fileID: 4641207527235630895, guid: 56609ad5fbfed2b46a29dad6f22b1960, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.506132
+      value: 0.50612444
       objectReference: {fileID: 0}
     - target: {fileID: 4641207527235630895, guid: 56609ad5fbfed2b46a29dad6f22b1960, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -1157,6 +1159,14 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7196499812403271924, guid: 56609ad5fbfed2b46a29dad6f22b1960, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.9966875
+      objectReference: {fileID: 0}
+    - target: {fileID: 7196499812403271924, guid: 56609ad5fbfed2b46a29dad6f22b1960, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.081327334
+      objectReference: {fileID: 0}
+    - target: {fileID: 7196499812403271924, guid: 56609ad5fbfed2b46a29dad6f22b1960, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -141.333
       objectReference: {fileID: 0}
@@ -1166,7 +1176,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8354531816005175505, guid: 56609ad5fbfed2b46a29dad6f22b1960, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7366178
+      value: 0.7366083
       objectReference: {fileID: 0}
     - target: {fileID: 8354531816005175505, guid: 56609ad5fbfed2b46a29dad6f22b1960, type: 3}
       propertyPath: m_LocalRotation.z
@@ -1287,9 +1297,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1320490037
+  m_SortingLayer: 4
+  m_SortingOrder: 20
   m_MaskInteraction: 0
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

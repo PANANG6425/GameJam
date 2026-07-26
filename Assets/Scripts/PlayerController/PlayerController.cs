@@ -31,6 +31,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float jumpBufferTime = 0.2f;
 
+    [SerializeField]
+    private float climbSpeed = 4f;
+
     [Header("Ground Check")]
     [SerializeField]
     private Transform groundCheck;
@@ -43,6 +46,10 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rb;
     private float horizontalInput;
+    private float verticalInput;
+    private bool onLadder;
+    private bool isClimbing;
+    private float savedGravity = 1f;
     private bool isGrounded = true;
     private bool isRunning;
     private bool isCrouching;
@@ -399,6 +406,31 @@ public class PlayerController : MonoBehaviour
             jumpBufferCounter = 0f;
             coyoteTimeCounter = 0f;
         }
+
+        // ---- Ladder climb ----
+        // เริ่มปีนเมื่ออยู่ในบันได + กดขึ้น/ลง (ปิด gravity)
+        if (onLadder && !cantMove && !isClimbing && Mathf.Abs(verticalInput) > 0.1f)
+        {
+            isClimbing = true;
+            savedGravity = rb.gravityScale;
+            rb.gravityScale = 0f;
+        }
+
+        if (isClimbing)
+        {
+            // กดกระโดด = ดีดออกจากบันได
+            if (jumpBufferCounter > 0f)
+            {
+                StopClimb();
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+                jumpBufferCounter = 0f;
+            }
+            else
+            {
+                // ขยับแนวตั้งตาม input · ถ้าไม่กด = ค้างอยู่กับที่
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, verticalInput * climbSpeed);
+            }
+        }
     }
 
     // Flip the sprite to face a world-space X position. Used by the revolver so
@@ -419,8 +451,32 @@ public class PlayerController : MonoBehaviour
     // Hooked to "Move" action via Player Input Component
     public void OnMove(InputAction.CallbackContext context)
     {
-        // Reads Vector2 input and captures the X axis (Left/Right)
-        horizontalInput = context.ReadValue<Vector2>().x;
+        // Reads Vector2 input and captures X (Left/Right) + Y (Up/Down for ladder)
+        Vector2 mv = context.ReadValue<Vector2>();
+        horizontalInput = mv.x;
+        verticalInput = mv.y;
+    }
+
+    // บันได: GameObject ต้องมี collider เป็น Is Trigger + Tag = "Ladder"
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Ladder")) onLadder = true;
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Ladder"))
+        {
+            onLadder = false;
+            StopClimb();
+        }
+    }
+
+    private void StopClimb()
+    {
+        if (!isClimbing) return;
+        isClimbing = false;
+        rb.gravityScale = savedGravity <= 0f ? 1f : savedGravity;
     }
 
     // Hooked to "Run" action via Player Input Component
