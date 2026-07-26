@@ -72,7 +72,8 @@ public class Enemy : MonoBehaviour
 
     protected virtual void Update()
     {
-        if (isDead) return;
+        if (isDead)
+            return;
 
         float dt = Time.deltaTime;
 
@@ -165,7 +166,8 @@ public class Enemy : MonoBehaviour
 
     public virtual void Hit(int damage)
     {
-        if (isDead) return;
+        if (isDead)
+            return;
 
         if (hitSound != null)
         {
@@ -202,12 +204,14 @@ public class Enemy : MonoBehaviour
     protected virtual void Die()
     {
         isDead = true;
-        
+
         // Disable physics and movement immediately
-        if (movement != null) movement.enabled = false;
-        
+        if (movement != null)
+            movement.enabled = false;
+
         var col = GetComponent<Collider2D>();
-        if (col != null) col.enabled = false;
+        if (col != null)
+            col.enabled = false;
 
         if (rb != null)
         {
@@ -259,11 +263,10 @@ public class Enemy : MonoBehaviour
         // being destroyed and can finish on their own, then self-destruct.
         if (deathParticles != null)
         {
-            
             Vector3 worldPos = deathParticles.transform.position;
             deathParticles.transform.SetParent(null, false);
             deathParticles.transform.position = worldPos;
-            
+
             deathParticles.Play();
 
             var main = deathParticles.main;
