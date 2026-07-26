@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 8983921686089336591}
   - component: {fileID: 3841324678063998214}
   - component: {fileID: 5773795976915525933}
-  m_Layer: 0
+  - component: {fileID: 2173052365881443625}
+  m_Layer: 9
   m_Name: ShockerProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -186,6 +187,19 @@ MonoBehaviour:
   damage: 1
   slowMultiplier: 0.5
   slowDuration: 2
+--- !u!210 &2173052365881443625
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3304162820955934201}
+  m_Enabled: 1
+  m_SortingLayerID: -1320490037
+  m_SortingLayer: 4
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
+  m_Sort3DAs2D: 0
 --- !u!1 &7706942683403887328
 GameObject:
   m_ObjectHideFlags: 0
@@ -196,7 +210,7 @@ GameObject:
   m_Component:
   - component: {fileID: 300419610500500731}
   - component: {fileID: 664223064724929087}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}

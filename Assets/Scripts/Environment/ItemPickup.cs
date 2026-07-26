@@ -4,7 +4,7 @@ using UnityEngine;
 // player เดินชน → ได้ผลตามชนิด แล้วไอเทมหายไป
 public class ItemPickup : MonoBehaviour
 {
-    public enum Kind { Bandage, AmmoBox, Charm, GasMask, Gill, Totem }
+    public enum Kind { Bandage, AmmoBox, Charm, GasMask, Gill, Totem, PartialWard }
 
     [SerializeField] Kind kind = Kind.Bandage;
     [SerializeField] int amount = 4;
@@ -39,6 +39,10 @@ public class ItemPickup : MonoBehaviour
 
             case Kind.Totem:
                 if (root.GetComponent<Totem>() == null) root.AddComponent<Totem>();
+                break;
+
+            case Kind.PartialWard:
+                if (root.GetComponent<PartialWard>() == null) root.AddComponent<PartialWard>();
                 break;
         }
 
