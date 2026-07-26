@@ -374,7 +374,9 @@ public class Revolver : MonoBehaviour
             return;
         }
 
-        Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        Vector3 mouseScreen = Mouse.current.position.ReadValue();
+        mouseScreen.z = Mathf.Abs(Camera.main.transform.position.z - transform.position.z);
+        Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(mouseScreen);
         Vector3 apex = transform.position;
         float angle = Mathf.Atan2(mouseWorld.y - apex.y, mouseWorld.x - apex.x);
 

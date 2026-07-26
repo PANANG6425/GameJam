@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 // TankBoss = บอสรถถัง (Enemy ที่อยู่กับที่ ไม่เดิน) — หย่อนระเบิดลงในพื้นที่เป้าหมายเป็นช่วง ๆ
@@ -27,12 +28,21 @@ public class TankBoss : Enemy
     [Tooltip("เวลา (วินาที) ระหว่างการหย่อนระเบิดแต่ละครั้ง")]
     [SerializeField]
     float dropInterval = 2f;
+    
+    [Tooltip("Trigger name for the attack animation")]
+    [SerializeField]
+    string attackAnimTrigger = "AnimAttack";
+    
+    [Tooltip("Delay in seconds from animation start to actually dropping bombs")]
+    [SerializeField]
+    float attackAnimDelay = 2f;
 
     [Tooltip("จำนวนระเบิดที่หย่อนต่อครั้ง")]
     [SerializeField]
     int bombsPerDrop = 1;
 
     float timer;
+    bool isAttacking;
 
     protected override void Update()
     {
@@ -40,15 +50,35 @@ public class TankBoss : Enemy
         base.Update();
 
         // ตายแล้ว หรือกำลังโดนสตัน ก็หยุดหย่อนระเบิด
-        if (isDead || IsStunned)
+        if (isDead || IsStunned || isAttacking)
             return;
 
         timer -= Time.deltaTime;
         if (timer <= 0f)
         {
-            timer = dropInterval;
+            StartCoroutine(AttackRoutine());
+        }
+    }
+
+    IEnumerator AttackRoutine()
+    {
+        isAttacking = true;
+        
+        if (animator != null && !string.IsNullOrEmpty(attackAnimTrigger))
+        {
+            animator.SetTrigger(attackAnimTrigger);
+        }
+        
+        yield return new WaitForSeconds(attackAnimDelay);
+        
+        // Ensure boss is still alive and not stunned before dropping
+        if (!isDead && !IsStunned)
+        {
             DropBombs();
         }
+        
+        timer = dropInterval;
+        isAttacking = false;
     }
 
     void DropBombs()

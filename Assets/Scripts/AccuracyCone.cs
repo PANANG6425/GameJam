@@ -78,7 +78,9 @@ public class AccuracyCone : MonoBehaviour
         if (mouseHold)
         {
             float radians = currentAngle * Mathf.Deg2Rad;
-            var mousePos = camera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+            Vector3 mouseScreen = Mouse.current.position.ReadValue();
+            mouseScreen.z = Mathf.Abs(camera.transform.position.z - transform.position.z);
+            var mousePos = camera.ScreenToWorldPoint(mouseScreen);
             Vector3 apex = transform.position;
 
             baseAngle = Mathf.Atan2(mousePos.y - apex.y, mousePos.x - apex.x);
