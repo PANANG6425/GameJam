@@ -39,6 +39,11 @@ public class EnemyBomber : Enemy
         if (isExploding) return;
         
         isDead = true; // Mark as dead so Update stops
+
+        if (rb != null)
+        {
+            rb.simulated = false;
+        }
         
         StartCoroutine(ExplodeSequence());
     }
@@ -52,7 +57,11 @@ public class EnemyBomber : Enemy
         if (rb != null) rb.linearVelocity = Vector2.zero;
 
         // Play explosion wind-up animation
-        if (animator != null) animator.SetTrigger("AnimBBExplode");
+        if (animator != null)
+        {
+            animator.ResetTrigger("AnimEnemyHit");
+            animator.SetTrigger("AnimBBExplode");
+        }
 
         // Play the explosion sound
         if (explosionSound != null)

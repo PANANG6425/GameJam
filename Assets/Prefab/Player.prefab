@@ -380,6 +380,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   groundCheckSize: {x: 0.5, y: 0.1}
+  hitSound: {fileID: 8300000, guid: b95c604a2560bb7438a2c7e07514a729, type: 3}
+  hitShakeData: {fileID: 11400000, guid: 9568497c2e59c644390d3bf4063f4ef9, type: 2}
+  hitParticlePrefab: {fileID: 1157551543763616993, guid: b00b81e140b23544195e6e67ce9a4d1c, type: 3}
 --- !u!114 &8859266303389752897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -400,7 +403,8 @@ MonoBehaviour:
   attackWindow: 0.15
   attackDelay: 0.18
   stunDuration: 1.5
-  knockbackForce: 15
+  camShakeData: {fileID: 11400000, guid: 9568497c2e59c644390d3bf4063f4ef9, type: 2}
+  knockbackForce: 20
   knockbackUp: 3
 --- !u!114 &5925777328643146368
 MonoBehaviour:
