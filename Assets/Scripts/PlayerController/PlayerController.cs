@@ -65,6 +65,7 @@ public class PlayerController : MonoBehaviour
 
     private LocoState locoState = LocoState.Grounded;
     public bool IsIdle => isGrounded && Mathf.Abs(horizontalInput) <= 0.01f && !isCrouching;
+    public bool IsCrouching => isCrouching;
 
     [Header("Status Effects")]
     private float slowTimer = 0f;
@@ -214,6 +215,25 @@ public class PlayerController : MonoBehaviour
                 SetLocoState(LocoState.Grounded);
             }
             return;
+        }
+
+        // Crouching has the highest priority over combat and regular locomotion.
+        if (isCrouching)
+        {
+            SetLocoState(LocoState.Crouching);
+            
+            // Force Aiming to false in the animator so AnyState doesn't pull us out of crouch
+            if (animator != null)
+            {
+                animator.SetBool("IsAiming", false);
+            }
+            return;
+        }
+
+        // Restore aiming state if we are no longer crouching but still aiming
+        if (revolver != null && revolver.IsAiming && animator != null)
+        {
+            animator.SetBool("IsAiming", true);
         }
 
         // While a combat animation owns the body (aim/fire/reload), let it play and

@@ -81,9 +81,8 @@ public class EnemyShocker : Enemy
     {
         if (projectilePrefab != null && shootPoint != null)
         {
-            Vector3 direction = (playerPos - shootPoint.position).normalized;
-            // Calculate angle to rotate projectile to face player
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            // Shoot straight depending on which way the enemy is facing
+            float angle = transform.localScale.x > 0 ? 0f : 180f;
             
             Instantiate(projectilePrefab, shootPoint.position, Quaternion.Euler(0, 0, angle));
         }
