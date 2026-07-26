@@ -16,16 +16,24 @@ public class CorruptionZone : MonoBehaviour
     void OnTriggerStay2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
+
+        // โทเทมเต็ม = กัน 100% (เหนือกว่าเสมอ)
         if (blockedByTotem && other.GetComponentInParent<Totem>() != null) return;
+
+        // เศษโทเทม (จากบอส 2) = โดนแค่ครึ่ง
+        float mult = (other.GetComponentInParent<PartialWard>() != null) ? 0.5f : 1f;
 
         timer -= Time.deltaTime;
         if (timer <= 0f)
         {
-            if (madnessPerTick > 0) GlobalEvent.IncreaseMadness.Invoke(madnessPerTick);
-            if (corruptHpPerTick > 0)
+            int madness = Mathf.RoundToInt(madnessPerTick * mult);
+            int hpLoss = Mathf.RoundToInt(corruptHpPerTick * mult);
+
+            if (madness > 0) GlobalEvent.IncreaseMadness.Invoke(madness);
+            if (hpLoss > 0)
             {
                 var hp = other.GetComponentInParent<HitPoint>();
-                if (hp != null) hp.DecreaseHP(corruptHpPerTick);
+                if (hp != null) hp.DecreaseHP(hpLoss);
             }
             timer = interval;
         }
