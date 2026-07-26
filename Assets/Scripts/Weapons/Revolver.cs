@@ -50,7 +50,9 @@ public class Revolver : MonoBehaviour
     [SerializeField]
     float quickFireInterval = 0.06f;
 
-    [Tooltip("Reserve capacity per special (non-Normal) type, in CYLINDERS. 1 cylinder = cylinderCapacity rounds.")]
+    [Tooltip(
+        "Reserve capacity per special (non-Normal) type, in CYLINDERS. 1 cylinder = cylinderCapacity rounds."
+    )]
     [SerializeField]
     int specialAmmoCapCylinders = 10;
 
@@ -110,8 +112,10 @@ public class Revolver : MonoBehaviour
 
         // Try to find the Animator
         animator = GetComponent<Animator>();
-        if (animator == null) animator = GetComponentInChildren<Animator>();
-        if (animator == null) animator = GetComponentInParent<Animator>();
+        if (animator == null)
+            animator = GetComponentInChildren<Animator>();
+        if (animator == null)
+            animator = GetComponentInParent<Animator>();
 
         playerController = GetComponentInParent<PlayerController>();
 
@@ -151,6 +155,7 @@ public class Revolver : MonoBehaviour
         accuracyCone.SetAimSpeed(AimSpeed);
         accuracyCone.SetMinAimAngle(MinAimAngle);
         GlobalEvent.AmmoChange.Invoke(RoundsLoaded, cylinderCapacity);
+        GlobalEvent.AmmoTypeChange.Invoke(SelectedType);
     }
 
     // Left-click - forwarded by the WeaponManager only while in Revolver mode.
@@ -205,6 +210,7 @@ public class Revolver : MonoBehaviour
         index = ((index + direction) % count + count) % count;
         SelectedType = TypeOrder[index];
         OnBulletTypeChanged?.Invoke(SelectedType);
+        GlobalEvent.AmmoTypeChange.Invoke(SelectedType);
     }
 
     // Reserve ammo for a type (Normal reports int.MaxValue = unlimited).
