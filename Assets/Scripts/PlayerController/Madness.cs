@@ -21,7 +21,7 @@ public class Madness : MonoBehaviour
 
     public void Increase(int amount)
     {
-        currentMadness += (currentMadness < maxMadness) ? amount : 0;
+        currentMadness = Mathf.Clamp(currentMadness + amount, 0, maxMadness);
         GlobalEvent.MadnessChange.Invoke(currentMadness, maxMadness);
     }
 

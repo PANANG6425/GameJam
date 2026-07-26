@@ -1,4 +1,5 @@
 using UnityEngine;
+using FirstGearGames.SmoothCameraShaker;
 
 public class Projectile : MonoBehaviour
 {
@@ -10,6 +11,9 @@ public class Projectile : MonoBehaviour
     // Effect payload assigned by the Revolver when the shot is fired.
     public BulletDefinition definition;
     public LayerMask enemyLayers;
+
+    [Tooltip("Generic impact VFX spawned when the bullet hits anything (walls or enemies).")]
+    public GameObject impactVFXPrefab;
 
     void Start()
     {
@@ -32,19 +36,37 @@ public class Projectile : MonoBehaviour
             return;
         }
 
+        Enemy directHit = null;
         if (hitInfo.CompareTag("Enemy"))
         {
-            Enemy directHit = hitInfo.GetComponent<Enemy>();
+            directHit = hitInfo.GetComponent<Enemy>();
             if (!markDestroy)
             {
-                ApplyEffect(directHit);
                 GlobalEvent.IncreaseMadness.Invoke(GlobalData.MADNESS_ATK);
+            }
+        }
+
+        if (!markDestroy)
+        {
+            ApplyEffect(directHit);
+        }
+
+        if (impactVFXPrefab != null)
+        {
+            var vfx = Instantiate(impactVFXPrefab, transform.position, Quaternion.identity);
+            var ps = vfx.GetComponent<ParticleSystem>();
+            if (ps != null)
+            {
+                Destroy(vfx, ps.main.duration + ps.main.startLifetime.constantMax);
+            }
+            else
+            {
+                Destroy(vfx, 1f); // Fallback destroy if not a particle system
             }
         }
 
         markDestroy = true;
         Destroy(gameObject);
-
     }
 
     private void ApplyEffect(Enemy directHit)
@@ -85,7 +107,13 @@ public class Projectile : MonoBehaviour
                 break;
 
             case BulletType.Flesh:
-                // TODO: Drain Madness - to be implemented later.
+                // Only drain madness if we actually hit an enemy
+                if (directHit != null)
+                {
+                    GameObject drainer = new GameObject("MadnessDrainer");
+                    var drainScript = drainer.AddComponent<MadnessDrainer>();
+                    drainScript.StartDrain(definition.fleshDrainAmount, definition.fleshDrainDuration);
+                }
                 break;
 
             case BulletType.Normal:
@@ -96,9 +124,17 @@ public class Projectile : MonoBehaviour
 
     private void Explode()
     {
+        if (definition.explosionShake != null)
+        {
+            CameraShakerHandler.Shake(definition.explosionShake);
+        }
+
         if (definition.explosionPrefab != null)
         {
-            Instantiate(definition.explosionPrefab, transform.position, Quaternion.identity);
+            var explosion = Instantiate(definition.explosionPrefab, transform.position, Quaternion.identity);
+            
+            // Scale the visual effect to match the actual damage radius
+            explosion.transform.localScale = Vector3.one * definition.explosionRadius;
         }
 
         var hits = Physics2D.OverlapCircleAll(

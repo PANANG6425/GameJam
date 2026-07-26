@@ -33,6 +33,9 @@ public class BulletDefinition
 
     [Tooltip("Optional VFX spawned at the point of impact.")]
     public GameObject explosionPrefab;
+    
+    [Tooltip("Camera shake when the explosion detonates.")]
+    public FirstGearGames.SmoothCameraShaker.ShakeData explosionShake;
 
     [Header("Shock (Short Stun)")]
     public float stunDuration = 1.5f;
@@ -41,5 +44,8 @@ public class BulletDefinition
     [Tooltip("Gas cloud prefab spawned on the ground at the point of impact.")]
     public GameObject gasCloudPrefab;
 
-    // Flesh (Drain Madness) is intentionally a stub for now - see Projectile.ApplyEffect.
+    [Header("Flesh (Drain Madness)")]
+    public float fleshDrainDuration = 2f;
+    [Tooltip("Amount of madness drained from the enemy (increases player madness).")]
+    public int fleshDrainAmount = 20;
 }

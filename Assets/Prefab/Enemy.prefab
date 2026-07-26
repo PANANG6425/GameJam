@@ -311,6 +311,8 @@ MonoBehaviour:
   hitSound: {fileID: 8300000, guid: b95c604a2560bb7438a2c7e07514a729, type: 3}
   hitParticlePrefab: {fileID: 1157551543763616993, guid: b00b81e140b23544195e6e67ce9a4d1c, type: 3}
   hitParticleCooldown: 0.1
+  stunEffect: {fileID: 0}
+  burnEffect: {fileID: 2401143413104259086, guid: da657e71849d92c40881c5034eabb671, type: 3}
   knockbackDuration: 0.2
 --- !u!114 &6178907471562688935
 MonoBehaviour:

@@ -968,6 +968,22 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.00016352875
       objectReference: {fileID: 0}
+    - target: {fileID: 3200387172775484240, guid: 583f6dea14c444e4eb84ac07b5cffa39, type: 3}
+      propertyPath: stunEffect
+      value: 
+      objectReference: {fileID: 2401143413104259086, guid: 54ccafc1997375246907dd3f3cf1732a, type: 3}
+    - target: {fileID: 3200387172775484240, guid: 583f6dea14c444e4eb84ac07b5cffa39, type: 3}
+      propertyPath: burnVfxOffset.y
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3200387172775484240, guid: 583f6dea14c444e4eb84ac07b5cffa39, type: 3}
+      propertyPath: stunVfxOffset.y
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3200387172775484240, guid: 583f6dea14c444e4eb84ac07b5cffa39, type: 3}
+      propertyPath: statusVfxOffset.y
+      value: -0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 3285523697651978912, guid: 583f6dea14c444e4eb84ac07b5cffa39, type: 3}
       propertyPath: m_LocalRotation.z
       value: -0.00001952052
@@ -13443,53 +13459,33 @@ PrefabInstance:
       value: 'Player '
       objectReference: {fileID: 0}
     - target: {fileID: 5925777328643146368, guid: c1f4dea64e0a8be49b1c6bec4373d196, type: 3}
-      propertyPath: bulletDefinitions.Array.data[0].gasCloudPrefab
+      propertyPath: bulletDefinitions.Array.data[2].explosionShake
       value: 
-      objectReference: {fileID: 6070414559203410830, guid: 90faf2bf7817aa84cb71971200ceff84, type: 3}
+      objectReference: {fileID: 11400000, guid: b2c4d7fcbad32d24793d7af8100c3f07, type: 2}
     - target: {fileID: 5925777328643146368, guid: c1f4dea64e0a8be49b1c6bec4373d196, type: 3}
-      propertyPath: bulletDefinitions.Array.data[1].gasCloudPrefab
-      value: 
-      objectReference: {fileID: 6070414559203410830, guid: 90faf2bf7817aa84cb71971200ceff84, type: 3}
+      propertyPath: bulletDefinitions.Array.data[0].fleshDrainAmount
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 5925777328643146368, guid: c1f4dea64e0a8be49b1c6bec4373d196, type: 3}
-      propertyPath: bulletDefinitions.Array.data[2].gasCloudPrefab
-      value: 
-      objectReference: {fileID: 6070414559203410830, guid: 90faf2bf7817aa84cb71971200ceff84, type: 3}
+      propertyPath: bulletDefinitions.Array.data[1].fleshDrainAmount
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 5925777328643146368, guid: c1f4dea64e0a8be49b1c6bec4373d196, type: 3}
-      propertyPath: bulletDefinitions.Array.data[3].gasCloudPrefab
-      value: 
-      objectReference: {fileID: 6070414559203410830, guid: 90faf2bf7817aa84cb71971200ceff84, type: 3}
+      propertyPath: bulletDefinitions.Array.data[2].fleshDrainAmount
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 5925777328643146368, guid: c1f4dea64e0a8be49b1c6bec4373d196, type: 3}
-      propertyPath: bulletDefinitions.Array.data[4].gasCloudPrefab
-      value: 
-      objectReference: {fileID: 6070414559203410830, guid: 90faf2bf7817aa84cb71971200ceff84, type: 3}
+      propertyPath: bulletDefinitions.Array.data[3].fleshDrainAmount
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 5925777328643146368, guid: c1f4dea64e0a8be49b1c6bec4373d196, type: 3}
-      propertyPath: bulletDefinitions.Array.data[5].gasCloudPrefab
-      value: 
-      objectReference: {fileID: 6070414559203410830, guid: 90faf2bf7817aa84cb71971200ceff84, type: 3}
+      propertyPath: bulletDefinitions.Array.data[4].fleshDrainAmount
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 5925777328643146368, guid: c1f4dea64e0a8be49b1c6bec4373d196, type: 3}
-      propertyPath: bulletDefinitions.Array.data[0].explosionPrefab
-      value: 
-      objectReference: {fileID: 6070414559203410830, guid: 022018374bac7144aa5c7982e625d507, type: 3}
-    - target: {fileID: 5925777328643146368, guid: c1f4dea64e0a8be49b1c6bec4373d196, type: 3}
-      propertyPath: bulletDefinitions.Array.data[1].explosionPrefab
-      value: 
-      objectReference: {fileID: 6070414559203410830, guid: 022018374bac7144aa5c7982e625d507, type: 3}
-    - target: {fileID: 5925777328643146368, guid: c1f4dea64e0a8be49b1c6bec4373d196, type: 3}
-      propertyPath: bulletDefinitions.Array.data[2].explosionPrefab
-      value: 
-      objectReference: {fileID: 6070414559203410830, guid: 022018374bac7144aa5c7982e625d507, type: 3}
-    - target: {fileID: 5925777328643146368, guid: c1f4dea64e0a8be49b1c6bec4373d196, type: 3}
-      propertyPath: bulletDefinitions.Array.data[3].explosionPrefab
-      value: 
-      objectReference: {fileID: 6070414559203410830, guid: 022018374bac7144aa5c7982e625d507, type: 3}
-    - target: {fileID: 5925777328643146368, guid: c1f4dea64e0a8be49b1c6bec4373d196, type: 3}
-      propertyPath: bulletDefinitions.Array.data[4].explosionPrefab
-      value: 
-      objectReference: {fileID: 6070414559203410830, guid: 022018374bac7144aa5c7982e625d507, type: 3}
-    - target: {fileID: 5925777328643146368, guid: c1f4dea64e0a8be49b1c6bec4373d196, type: 3}
-      propertyPath: bulletDefinitions.Array.data[5].explosionPrefab
-      value: 
-      objectReference: {fileID: 6070414559203410830, guid: 022018374bac7144aa5c7982e625d507, type: 3}
+      propertyPath: bulletDefinitions.Array.data[5].fleshDrainAmount
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 6279433426397295255, guid: c1f4dea64e0a8be49b1c6bec4373d196, type: 3}
       propertyPath: camera
       value: 
