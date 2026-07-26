@@ -483,6 +483,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Portal
   connectingDoor: {fileID: 0}
   banner: {fileID: 5526376179624973887}
+  isActive: 0
 --- !u!61 &2400312804376652189
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -513,7 +514,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
