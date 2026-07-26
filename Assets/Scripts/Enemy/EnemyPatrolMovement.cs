@@ -28,7 +28,6 @@ public class EnemyPatrolMovement : EnemyMovement
         if (pauseMovement)
         {
             if (animator != null && !string.IsNullOrEmpty(moveAnimParam)) animator.SetBool(moveAnimParam, false);
-            rb.linearVelocityX = 0;
             return;
         }
 

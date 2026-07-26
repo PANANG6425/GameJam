@@ -1,4 +1,5 @@
 using UnityEngine;
+using FirstGearGames.SmoothCameraShaker;
 
 // Melee attack (V). A single strike that damages, stuns and knocks the enemy back.
 public class Shovel : MonoBehaviour
@@ -23,6 +24,9 @@ public class Shovel : MonoBehaviour
     [Header("On Hit")]
     [SerializeField]
     float stunDuration = 1f;
+
+    [SerializeField]
+    ShakeData camShakeData;
 
     [Tooltip("Horizontal push applied to the enemy, away from the player.")]
     [SerializeField]
@@ -126,6 +130,11 @@ public class Shovel : MonoBehaviour
         enemy.Hit(damage);
         enemy.ApplyStun(stunDuration);
         if (GlobalEvent.Instance != null) GlobalEvent.Instance.TriggerHitStop(0.1f);
+
+        if (camShakeData != null)
+        {
+            CameraShakerHandler.Shake(camShakeData);
+        }
 
         GlobalEvent.IncreaseMadness.Invoke(GlobalData.MADNESS_ATK);
 

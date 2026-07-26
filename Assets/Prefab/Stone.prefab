@@ -172,3 +172,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Projectile
   speed: 50
   lifeTime: 5
+  definition:
+    type: 0
+    impactDamage: 1
+    burnDamagePerTick: 1
+    burnTickInterval: 0.5
+    burnDuration: 3
+    explosionRadius: 2.5
+    explosionDamage: 3
+    explosionPrefab: {fileID: 0}
+    stunDuration: 1.5
+    gasCloudPrefab: {fileID: 0}
+  enemyLayers:
+    serializedVersion: 2
+    m_Bits: 256

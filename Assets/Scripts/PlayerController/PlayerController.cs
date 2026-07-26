@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using FirstGearGames.SmoothCameraShaker;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(HitPoint))]
@@ -64,9 +65,22 @@ public class PlayerController : MonoBehaviour
     private float slowTimer = 0f;
     private float slowMultiplier = 1f;
 
-    // Aiming / firing / reloading own the body's animation.
+    [Header("Audio")]
+    [SerializeField]
+    private AudioClip hitSound;
+
+    [Header("Camera Shake")]
+    [SerializeField]
+    private ShakeData hitShakeData;
+
+    [Header("VFX")]
+    [SerializeField]
+    private GameObject hitParticlePrefab;
+
+    // Aiming / firing / reloading / melee own the body's animation.
     private bool CombatBusy =>
-        revolver != null && (revolver.IsAiming || revolver.IsQuickFiring || revolver.IsReloading);
+        (revolver != null && (revolver.IsAiming || revolver.IsQuickFiring || revolver.IsReloading)) ||
+        (shovel != null && shovel.IsAttacking);
 
     // The player is rooted in place while crouching or busy with the revolver.
     private bool MovementLocked => isCrouching || CombatBusy;
@@ -123,6 +137,30 @@ public class PlayerController : MonoBehaviour
 
     private void OnPlayerHit()
     {
+        if (hitSound != null)
+        {
+            GameObject tempAudio = new GameObject("TempHitAudio");
+            AudioSource source = tempAudio.AddComponent<AudioSource>();
+            source.clip = hitSound;
+            source.Play();
+            Destroy(tempAudio, hitSound.length + 0.1f);
+        }
+
+        if (hitShakeData != null)
+        {
+            CameraShakerHandler.Shake(hitShakeData);
+        }
+
+        if (hitParticlePrefab != null)
+        {
+            GameObject p = Instantiate(hitParticlePrefab, transform.position, Quaternion.identity);
+            ParticleSystem ps = p.GetComponent<ParticleSystem>();
+            if (ps != null)
+            {
+                Destroy(p, ps.main.duration + ps.main.startLifetime.constantMax);
+            }
+        }
+
         if (animator == null)
         {
             return;

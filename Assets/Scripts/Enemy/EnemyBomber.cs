@@ -8,6 +8,8 @@ public class EnemyBomber : Enemy
     [SerializeField] int explosionDamage = 3;
     [SerializeField] LayerMask playerLayer; 
     [SerializeField] ParticleSystem explosionParticles; // Unique particles for the big explosion
+    [SerializeField] AudioClip explosionSound; // Audio to play on explosion
+    [SerializeField] float explosionSoundDelay = 0f; // Delay before playing the explosion sound
 
     bool isExploding = false;
 
@@ -26,15 +28,10 @@ public class EnemyBomber : Enemy
 
     public override void Hit(int damage)
     {
-        if (isDead || isExploding) return;
-
-        hp?.DecreaseHP(damage);
-        if (hp?.GetCurrentHP() <= 0)
-        {
-            Die();
-        }
-        // We purposely do NOT call base.Hit() or set "AnimEnemyHit" here 
-        // because the bomber has no hit animation.
+        // Don't interrupt the explosion if it's already triggered
+        if (isExploding) return;
+        
+        base.Hit(damage);
     }
 
     protected override void Die()
@@ -56,6 +53,28 @@ public class EnemyBomber : Enemy
 
         // Play explosion wind-up animation
         if (animator != null) animator.SetTrigger("AnimBBExplode");
+
+        // Play the explosion sound
+        if (explosionSound != null)
+        {
+            if (explosionSoundDelay > 0f)
+            {
+                GameObject tempAudio = new GameObject("TempExplosionAudio");
+                tempAudio.transform.position = transform.position;
+                AudioSource source = tempAudio.AddComponent<AudioSource>();
+                source.clip = explosionSound;
+                source.PlayDelayed(explosionSoundDelay);
+                Destroy(tempAudio, explosionSound.length + explosionSoundDelay + 0.1f);
+            }
+            else
+            {
+                GameObject tempAudio = new GameObject("TempExplosionAudio");
+                AudioSource source = tempAudio.AddComponent<AudioSource>();
+                source.clip = explosionSound;
+                source.Play();
+                Destroy(tempAudio, explosionSound.length + 0.1f);
+            }
+        }
 
         // Wait for the animation to finish (using the same robust method as DeathSequence)
         if (animator != null)

@@ -17,7 +17,7 @@ public class EnemyShocker : Enemy
     {
         base.Update();
 
-        if (isDead || IsStunned) return;
+        if (isDead || IsStunned || knockbackTimer > 0f) return;
 
         if (attackTimer > 0f)
         {

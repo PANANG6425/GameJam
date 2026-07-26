@@ -18,6 +18,19 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     protected ParticleSystem deathParticles;
 
+    [Header("Audio")]
+    [SerializeField]
+    protected AudioClip hitSound;
+
+    [SerializeField]
+    protected GameObject hitParticlePrefab;
+
+    [Tooltip("Minimum time between hit particle spawns to prevent spam")]
+    [SerializeField]
+    protected float hitParticleCooldown = 0.1f;
+
+    protected float lastHitParticleTime = -1f;
+
     protected bool isDead = false;
 
     protected Vector3 playerPos = new();
@@ -153,6 +166,27 @@ public class Enemy : MonoBehaviour
     public virtual void Hit(int damage)
     {
         if (isDead) return;
+
+        if (hitSound != null)
+        {
+            GameObject tempAudio = new GameObject("TempHitAudio");
+            AudioSource source = tempAudio.AddComponent<AudioSource>();
+            source.clip = hitSound;
+            // Leave spatialBlend at 0 for 2D sound so it doesn't get quiet
+            source.Play();
+            Destroy(tempAudio, hitSound.length + 0.1f);
+        }
+
+        if (hitParticlePrefab != null && Time.time >= lastHitParticleTime + hitParticleCooldown)
+        {
+            lastHitParticleTime = Time.time;
+            GameObject p = Instantiate(hitParticlePrefab, transform.position, Quaternion.identity);
+            ParticleSystem ps = p.GetComponent<ParticleSystem>();
+            if (ps != null)
+            {
+                Destroy(p, ps.main.duration + ps.main.startLifetime.constantMax);
+            }
+        }
 
         hp?.DecreaseHP(damage);
         if (hp?.GetCurrentHP() <= 0)
